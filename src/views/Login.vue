@@ -31,12 +31,7 @@
         {{ $t('admin-panel') }}
       </v-card-title>
       <v-card-text class="pl-2">
-        <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-          @submit.prevent="submit"
-        >
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
             v-model="email"
             :rules="emailRules"
@@ -66,7 +61,7 @@
         </v-form>
       </v-card-text>
       <v-card-actions class="flex-column">
-        <v-btn block color="primary" outlined type="submit">
+        <v-btn block color="primary" outlined @click="submit">
           {{ $t('sign-in') }}
         </v-btn>
         <v-btn outlined block class="ma-2 black--text">
@@ -84,6 +79,10 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions } = createNamespacedHelpers('auth')
+
 export default {
   data: () => ({
     valid: true,
@@ -98,9 +97,15 @@ export default {
   }),
 
   methods: {
+    ...mapActions(['loginUser']),
     submit() {
-      this.$refs.form.validate()
-      console.log('test')
+      if (!this.$refs.form.validate()) return
+      this.loginUser({
+        email: this.email,
+        password: this.password,
+      }).then(() => {
+        this.$router.push({ name: 'Home' })
+      })
     },
   },
 }
