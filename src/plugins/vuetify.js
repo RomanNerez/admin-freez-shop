@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css'
 import IconGoogle from '@/components/IconGoogle.vue'
 
 Vue.use(Vuetify)
