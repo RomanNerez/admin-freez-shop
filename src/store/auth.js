@@ -23,7 +23,7 @@ export default {
 
       try {
         const { data } = await axios.post(
-          `${process.env.VUE_APP_API_URL_PRODUCTION}/api/auth/me`,
+          `${process.env.VUE_APP_API_URL}/api/auth/me`,
           {},
           {
             headers: {
@@ -39,7 +39,7 @@ export default {
     async loginUser(state, credentials) {
       try {
         const { data } = await axios.post(
-          `${process.env.VUE_APP_API_URL_PRODUCTION}/api/auth/login`,
+          `${process.env.VUE_APP_API_URL}/api/auth/login`,
           credentials
         )
         localStorage.setItem('Authorization', `Bearer ${data.access_token}`)
@@ -51,7 +51,7 @@ export default {
       const jwt = localStorage.getItem('Authorization')
       try {
         await axios.post(
-          `${process.env.VUE_APP_API_URL_PRODUCTION}/api/auth/logout`,
+          `${process.env.VUE_APP_API_URL}/api/auth/logout`,
           {},
           {
             headers: {

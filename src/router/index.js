@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import { AUTH_LAYOUT, DEFAULT_LAYOUT } from '@/constants/layout'
 import authenticate from '@/middleware/authenticate'
 import redirectIfAuthenticated from '@/middleware/redirectIfAuthenticated'
+import callback from '@/middleware/callback'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,14 @@ const routes = [
       layout: AUTH_LAYOUT,
     },
     component: () => import('@/views/Login.vue'),
+  },
+  {
+    path: '/callback',
+    meta: {
+      layout: 'auth',
+    },
+    component: () => import('@/views/Login.vue'),
+    beforeEnter: callback,
   },
 ]
 

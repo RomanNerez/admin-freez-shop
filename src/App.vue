@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <component :is="$route.meta.layout ? $route.meta.layout : DEFAULT_LAYOUT">
+    <component v-if="$route.meta.layout" :is="layout">
       <router-view></router-view>
     </component>
+    <notifications class="custom-notification" group="foo" />
   </div>
 </template>
 
@@ -19,5 +20,16 @@ export default {
   data: () => ({
     DEFAULT_LAYOUT,
   }),
+  computed: {
+    layout() {
+      return this.$route.meta.layout ?? DEFAULT_LAYOUT
+    },
+  },
 }
 </script>
+
+<style>
+.custom-notification {
+  top: 10px !important;
+}
+</style>

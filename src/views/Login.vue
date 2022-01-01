@@ -64,7 +64,7 @@
         <v-btn block color="primary" outlined @click="submit">
           {{ $t('sign-in') }}
         </v-btn>
-        <v-btn outlined block class="ma-2 black--text">
+        <v-btn outlined block class="ma-2 black--text" @click="redirectToGoole">
           <img
             src="../assets/icon-google.svg"
             class="mr-3"
@@ -80,6 +80,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+import { getRedirectUrl } from '@/services/socialize'
 
 const { mapActions } = createNamespacedHelpers('auth')
 
@@ -106,6 +107,18 @@ export default {
       }).then(() => {
         this.$router.push({ name: 'Home' })
       })
+    },
+    async redirectToGoole() {
+      const data = await getRedirectUrl()
+      if (!data) {
+        this.$notify({
+          group: 'foo',
+          title: 'Important message',
+          text: 'Hello user! This is a notification!',
+        })
+        return
+      }
+      window.location = data.redirect_url
     },
   },
 }
