@@ -15,7 +15,28 @@ const routes = [
       layout: DEFAULT_LAYOUT,
       requiresLogin: true,
     },
+    redirect: '/settings/base',
     component: () => import('@/views/Home.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    meta: {
+      layout: DEFAULT_LAYOUT,
+      requiresLogin: true,
+    },
+    component: () => import('@/views/settings/Index.vue'),
+    children: [
+      {
+        path: 'base',
+        name: 'Base',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Settings/BaseSetting.vue'),
+      },
+    ],
   },
   {
     path: '/login',

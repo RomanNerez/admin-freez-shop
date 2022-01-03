@@ -1,0 +1,341 @@
+<template>
+  <v-col>
+    <validation-observer ref="observer">
+      <v-container fluid tag="section">
+        <v-row v-if="!overlay">
+          <Socialize />
+          <AddressShop />
+          <Contacts />
+          <DataShop />
+          <Delivery />
+        </v-row>
+        <v-sheet
+          v-else
+          class="d-flex justify-center align-center"
+          color="grey lighten-3"
+          height="550"
+        >
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+        </v-sheet>
+      </v-container>
+    </validation-observer>
+    <div class="save-options-store">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            large
+            color="green"
+            v-on="on"
+            @click="update"
+            :disabled="alert.option.type === 'loading'"
+          >
+            <v-icon dark> mdi-content-save-outline </v-icon>
+          </v-btn>
+        </template>
+        <span>Обновить данные</span>
+      </v-tooltip>
+    </div>
+    <v-snackbar
+      v-model="alert.show"
+      fixed
+      top
+      right
+      elevation="24"
+      :color="alertColor"
+      :timeout="alert.option.type === 'loading' ? -1 : 4000"
+    >
+      {{ alert.option.text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :loading="alert.option.type === 'loading'"
+          color="white"
+          text
+          v-bind="attrs"
+          @click="alert.show = false"
+        >
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-col>
+</template>
+
+<script>
+import { createNamespacedHelpers } from 'vuex'
+import axios from 'axios'
+import { ValidationObserver, extend } from 'vee-validate'
+import Socialize from './Base/Socialize.vue'
+import AddressShop from './Base/AddressShop.vue'
+import Contacts from './Base/Contacts.vue'
+import DataShop from './Base/DataShop.vue'
+import Delivery from './Base/Delivery.vue'
+import { required } from 'vee-validate/dist/rules'
+import { LOADING_GET_OPTIONS } from '@/constants/loadingIds'
+import { DATA } from '@/router/paths-api'
+
+extend('required', required)
+
+const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
+const {
+  mapGetters: mapGettersSettings,
+  mapMutations: mapMutationsSettings,
+  mapActions: mapActionsSettings,
+} = createNamespacedHelpers('settings')
+const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
+
+export default {
+  name: 'BaseSettings',
+  props: ['chosen'],
+  components: {
+    ValidationObserver,
+    Socialize,
+    AddressShop,
+    Contacts,
+    DataShop,
+    Delivery,
+  },
+  data: function () {
+    return {
+      alert: {
+        show: false,
+        option: {
+          type: null,
+          text: null,
+        },
+      },
+      location: window.location.origin,
+      langs: {
+        items: this.$store.state?.data?.langs || [],
+        select: 1,
+      },
+    }
+  },
+  watch: {
+    local: function (a, b) {
+      for (let key in this.data.content[b]) {
+        let item = this.data.content[a][key]
+
+        if (key !== 'addr') {
+          if (!item) {
+            this.data.content[a][key] = this.data.content[b][key]
+          } else if (typeof item === 'object') {
+            item.forEach((values, index) => {
+              for (let name in values) {
+                let val = values[name]
+
+                if (!val) {
+                  this.data.content[a][key][index][name] =
+                    this.data.content[b][key][index][name]
+                }
+              }
+            })
+          }
+        } else {
+          for (let name in this.data.content[b][key]) {
+            let addr = this.data.content[a][key][name]
+
+            if (!addr) {
+              this.data.content[a][key][name] = this.data.content[b][key][name]
+            }
+          }
+        }
+      }
+    },
+    'alert.option': {
+      deep: true,
+      handler() {
+        this.alert.show = true
+      },
+    },
+  },
+  beforeMount() {
+    this.findOptions()
+  },
+  computed: {
+    ...mapGettersLang(['getLangs', 'getSelect']),
+    ...mapGettersSettings(['getOptions']),
+    ...mapGettersLoading(['getLoadingIds']),
+    overlay() {
+      return this.getLoadingIds.includes(LOADING_GET_OPTIONS)
+    },
+    alertColor() {
+      switch (this.alert.option.type) {
+        case 'loading':
+          return 'blue darken-1'
+        default:
+          return this.alert.option.type
+      }
+    },
+    data() {
+      // return this.$store.getters.optionsData
+      return this.getOptions
+    },
+    local() {
+      return (
+        this.getLangs.find((item) => item.id === this.getSelect)?.local || ''
+      )
+    },
+  },
+  methods: {
+    ...mapMutationsSettings(['updateOptions']),
+    ...mapActionsSettings(['findOptions']),
+    selectFile: function () {
+      window.open(
+        '/laravel-filemanager?type=image',
+        'FileManager',
+        'width=1280,height=700'
+      )
+      return new Promise((resolve) => {
+        window.SetUrl = (items) => {
+          resolve(items.slice(0, 6))
+        }
+      })
+    },
+    setMedia: function (current, index, type) {
+      this.selectFile().then((response) => {
+        if (type !== -1) {
+          const replace = type ? 0 : response.length
+
+          current.splice(
+            index,
+            replace,
+            ...response.map((item, index) => {
+              return {
+                id: index + +new Date(),
+                source: item.url,
+              }
+            })
+          )
+
+          if (current.length > 6) {
+            const delta = current.length - 6
+            current.splice(-delta, delta)
+          }
+        } else {
+          let source = response[0].url
+
+          if (typeof index === 'number') {
+            current.splice(index, 1, source)
+          } else {
+            current[index] = source
+          }
+        }
+      })
+    },
+    // addDelivery: function () {
+    //   this.data.delivery.push({
+    //     inputs: null,
+    //     payment: null,
+    //     api: null,
+    //     price: {
+    //       rate: 0,
+    //       sum: 0,
+    //     },
+    //   })
+
+    //   this.getLangs.forEach((lang) => {
+    //     this.data.content[lang.local].delivery.push({
+    //       name: '',
+    //     })
+    //   })
+    // for (let i = 0; i < this.getLangs.length; i++) {
+    //   let local = this.langs.items[i].local
+
+    //   this.data.content[local].delivery.push({
+    //     name: '',
+    //   })
+    // }
+    // },
+    // rmDelivery: function (index) {
+    //   this.data.delivery.splice(index, 1)
+
+    //   this.getLangs.forEach((lang) => {
+    //     this.data.content[lang.local].delivery.splice(index, 1)
+    //   })
+    // },
+    // addSocial: function () {
+    //   if (!this.data.socials) {
+    //     this.data.socials = []
+    //   }
+    //   this.data.socials.push({
+    //     image: '',
+    //     name: '',
+    //     link: '',
+    //   })
+    // },
+    update: function () {
+      this.$refs.observer.validate().then((check) => {
+        for (let i = 0; i < this.getLangs.length; i++) {
+          let local = this.getLangs[i].local,
+            lang = this.getLangs[i].id
+
+          for (let key in this.data.content[local]) {
+            let item = this.data.content[local][key]
+
+            if (key !== 'addr') {
+              if (!item) {
+                this.langs.select = lang
+                return
+              } else if (typeof item === 'object' && item.length) {
+                for (let ii = 0; ii < item.length; ii++) {
+                  let values = item[ii]
+                  if (!values.name) {
+                    this.langs.select = lang
+                    return
+                  }
+                }
+              }
+            } else {
+              for (let name in this.data.content[local][key]) {
+                let addr = this.data.content[local][key][name]
+
+                if (!addr) {
+                  this.langs.select = lang
+                  return
+                }
+              }
+            }
+          }
+        }
+
+        if (check) {
+          let data = JSON.parse(JSON.stringify(this.data))
+
+          if (data.socials) {
+            data.socials = data.socials.filter((item) => {
+              return item.image && item.link && item.name
+            })
+          }
+
+          this.alert.option.type = 'loading'
+          this.alert.option.text = 'Обновление данных...'
+
+          axios
+            .post(DATA.SETTINGS.OPTIONS_UPDATE, {
+              input: data,
+            })
+            .then((response) => {
+              this.updateOptions(response.data)
+
+              this.alert.option.type = 'success'
+              this.alert.option.text = 'Данные успешно обновлены'
+            })
+            .catch(() => {
+              this.alert.option.type = 'error'
+              this.alert.option.text = 'Неизвестная ошибка, повторите попытку'
+            })
+        }
+      })
+    },
+  },
+}
+</script>

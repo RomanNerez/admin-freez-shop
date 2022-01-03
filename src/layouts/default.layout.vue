@@ -1,216 +1,213 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      app
-      v-model="drawer"
-      :dark="true"
-      style="
-        background-image: linear-gradient(
-            rgba(0, 0, 0, 0.8),
-            rgba(0, 0, 0, 0.8)
-          ),
-          url('/library/img/sidebar-1.jpg');
-        background-position: center;
-        background-size: cover;
-      "
-    >
-      <v-divider
-        style="width: calc(100% - 32px) !important"
-        class="ml-4"
-      ></v-divider>
-
-      <v-list-item class="px-3 py-3">
-        <v-list-item-avatar class="mr-3 ml-2">
-          <span>{{ user.fullname | firstLetter }}</span>
-        </v-list-item-avatar>
-        <v-list-item-title class="mr-2">{{ user.fullname }}</v-list-item-title>
-      </v-list-item>
-
-      <v-divider
-        style="width: calc(100% - 32px) !important"
-        class="ml-4"
-      ></v-divider>
-      <v-list class="pa-4">
-        <v-list-group
-          v-for="(menu, index) in menus"
-          :value="index == selecteditem.menu"
-          :key="index"
-          dense
-          class="py-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title
-                v-text="menu.title"
-                class="white--text"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            v-for="(child, index) in menu.child"
-            :key="index"
-            class="px-3 my-2"
-            :class="{ 'is-active': selectItem === child.component }"
-            v-on:click="selectItem = child.component"
-          >
-            <v-list-item-icon class="my-3 mr-4 ml-1">
-              <v-icon>{{ child.icon }}</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title class="font-weight-regular text-body-2">{{
-                child.title
-              }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar absolute app color="transparent" flat fixed height="90">
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>{{ selecteditem.data.title }}</v-toolbar-title>
-
-      <template
-        v-if="selecteditem.data.filter && selecteditem.data.filter.items.length"
+    <template v-if="!overlay">
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        :dark="true"
+        class="background-sidebar"
       >
-        <v-autocomplete
-          label="Категория:"
-          class="nav__filter"
-          filled
-          color="#4bb04f"
-          v-model="selected.categories"
-          :items="selecteditem.data.filter.items"
-          item-text="content.ru.title"
-          item-value="id"
-          no-data-text="Нет совпадений..."
-        ></v-autocomplete>
-      </template>
+        <v-divider
+          style="width: calc(100% - 32px) !important"
+          class="ml-4"
+        ></v-divider>
 
-      <template v-if="selecteditem.data.actions">
-        <v-dialog v-if="selecteditem.data.actions.priceEdit" max-width="550">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
-              x-large
-              dark
-              class="ml-8"
+        <v-list-item class="px-3 py-3">
+          <v-list-item-avatar class="mr-3 ml-2">
+            <span>{{ getUser.fullname | firstLetter }}</span>
+          </v-list-item-avatar>
+          <v-list-item-title class="mr-2">{{
+            getUser.fullname
+          }}</v-list-item-title>
+        </v-list-item>
+
+        <v-divider
+          style="width: calc(100% - 32px) !important"
+          class="ml-4"
+        ></v-divider>
+        <v-list class="pa-4">
+          <v-list-group
+            v-for="(menu, index) in menus"
+            :value="index == selecteditem.menu"
+            :key="index"
+            dense
+            class="py-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="menu.title"
+                  class="white--text"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item
+              v-for="(child, index) in menu.child"
+              :key="index"
+              class="px-3 my-2"
+              :class="{ 'is-active': selectItem === child.component }"
+              v-on:click="selectItem = child.component"
             >
-              <v-icon left> mdi-pencil </v-icon>
-              Цены
-            </v-btn>
-          </template>
-          <template v-slot:default="dialog">
-            <v-card class="dialog-wrap">
-              <v-toolbar color="primary" dark>
-                Массовое редактирование стоимости товаров
-              </v-toolbar>
-              <v-card-text>
-                <v-row>
-                  <v-col cols="4" align-self="center">
-                    <span class="text-h6"><small>Направление</small></span>
-                  </v-col>
-                  <v-col cols="8" align-self="center">
-                    <v-select
-                      :items="[
-                        {
-                          val: -1,
-                          name: 'Понижение',
-                        },
-                        {
-                          val: 1,
-                          name: 'Повышение',
-                        },
-                      ]"
-                      item-value="val"
-                      item-text="name"
-                      color="green"
-                      label="Направление"
-                      solo
-                      hide-details
-                      v-model="actions.edit.price.direction"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="4" align-self="center">
-                    <span class="text-h6"><small>Оператор</small></span>
-                  </v-col>
-                  <v-col cols="8" align-self="center">
-                    <v-select
-                      :items="[
-                        {
-                          val: 'percent',
-                          name: 'Проценты',
-                        },
-                        {
-                          val: 'int',
-                          name: 'Число',
-                        },
-                      ]"
-                      item-value="val"
-                      item-text="name"
-                      color="green"
-                      label="Оператор"
-                      solo
-                      hide-details
-                      v-model="actions.edit.price.operator"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="4" align-self="center">
-                    <span class="text-h6"><small>Значение</small></span>
-                  </v-col>
-                  <v-col cols="8" align-self="center">
-                    <v-text-field
-                      type="number"
-                      color="green"
-                      label="Значение"
-                      solo
-                      hide-details
-                      v-model="actions.edit.price.value"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-              <v-card-actions class="justify-end">
-                <v-btn text @click="dialog.value = false"> Отмена </v-btn>
+              <v-list-item-icon class="my-3 mr-4 ml-1">
+                <v-icon>{{ child.icon }}</v-icon>
+              </v-list-item-icon>
 
-                <v-btn
-                  color="success"
-                  class="ma-0 ml-4"
-                  :loading="actions.edit.price.pending"
-                  :disabled="!checkEditPrice"
-                  @click="priceEdit(dialog)"
-                >
-                  Применить
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-regular text-body-2">{{
+                  child.title
+                }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </v-navigation-drawer>
 
-        <v-btn
-          v-if="selecteditem.data.actions.priceGenerate"
-          color="#ff9800"
-          x-large
-          dark
-          class="ml-8"
-          :loading="actions.priceList.pending"
-          v-on:click="priceListGenerate"
+      <v-app-bar absolute app color="transparent" flat fixed height="90">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>{{ selecteditem.data.title }}</v-toolbar-title>
+
+        <template
+          v-if="
+            selecteditem.data.filter && selecteditem.data.filter.items.length
+          "
         >
-          <v-icon left> mdi-format-list-bulleted </v-icon>
-          Прайс-лист
-        </v-btn>
-      </template>
+          <v-autocomplete
+            label="Категория:"
+            class="nav__filter"
+            filled
+            color="#4bb04f"
+            v-model="selected.categories"
+            :items="selecteditem.data.filter.items"
+            item-text="content.ru.title"
+            item-value="id"
+            no-data-text="Нет совпадений..."
+          ></v-autocomplete>
+        </template>
 
-      <v-spacer></v-spacer>
+        <template v-if="selecteditem.data.actions">
+          <v-dialog v-if="selecteditem.data.actions.priceEdit" max-width="550">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+                x-large
+                dark
+                class="ml-8"
+              >
+                <v-icon left> mdi-pencil </v-icon>
+                Цены
+              </v-btn>
+            </template>
+            <template v-slot:default="dialog">
+              <v-card class="dialog-wrap">
+                <v-toolbar color="primary" dark>
+                  Массовое редактирование стоимости товаров
+                </v-toolbar>
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="4" align-self="center">
+                      <span class="text-h6"><small>Направление</small></span>
+                    </v-col>
+                    <v-col cols="8" align-self="center">
+                      <v-select
+                        :items="[
+                          {
+                            val: -1,
+                            name: 'Понижение',
+                          },
+                          {
+                            val: 1,
+                            name: 'Повышение',
+                          },
+                        ]"
+                        item-value="val"
+                        item-text="name"
+                        color="green"
+                        label="Направление"
+                        solo
+                        hide-details
+                        v-model="actions.edit.price.direction"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="4" align-self="center">
+                      <span class="text-h6"><small>Оператор</small></span>
+                    </v-col>
+                    <v-col cols="8" align-self="center">
+                      <v-select
+                        :items="[
+                          {
+                            val: 'percent',
+                            name: 'Проценты',
+                          },
+                          {
+                            val: 'int',
+                            name: 'Число',
+                          },
+                        ]"
+                        item-value="val"
+                        item-text="name"
+                        color="green"
+                        label="Оператор"
+                        solo
+                        hide-details
+                        v-model="actions.edit.price.operator"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="4" align-self="center">
+                      <span class="text-h6"><small>Значение</small></span>
+                    </v-col>
+                    <v-col cols="8" align-self="center">
+                      <v-text-field
+                        type="number"
+                        color="green"
+                        label="Значение"
+                        solo
+                        hide-details
+                        v-model="actions.edit.price.value"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                  <v-btn text @click="dialog.value = false"> Отмена </v-btn>
 
-      <!--<v-menu
+                  <v-btn
+                    color="success"
+                    class="ma-0 ml-4"
+                    :loading="actions.edit.price.pending"
+                    :disabled="!checkEditPrice"
+                    @click="priceEdit(dialog)"
+                  >
+                    Применить
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+
+          <v-btn
+            v-if="selecteditem.data.actions.priceGenerate"
+            color="#ff9800"
+            x-large
+            dark
+            class="ml-8"
+            :loading="actions.priceList.pending"
+            v-on:click="priceListGenerate"
+          >
+            <v-icon left> mdi-format-list-bulleted </v-icon>
+            Прайс-лист
+          </v-btn>
+        </template>
+
+        <v-spacer></v-spacer>
+
+        <!--<v-menu
                 bottom
                 left
                 offset-y
@@ -251,50 +248,63 @@
                 </v-list>
             </v-menu>-->
 
-      <a href="/" target="_blank" style="text-decoration: unset">
-        <v-btn class="ml-2" min-width="0" text>
-          <v-icon>mdi-home-export-outline</v-icon>
-        </v-btn>
-      </a>
-
-      <v-menu
-        bottom
-        left
-        offset-y
-        origin="top right"
-        transition="scale-transition"
-      >
-        <template v-slot:activator="{ attrs, on }">
-          <v-btn class="ml-2" min-width="0" text v-bind="attrs" v-on="on">
-            <v-icon>mdi-account</v-icon>
+        <a href="/" target="_blank" style="text-decoration: unset">
+          <v-btn class="ml-2" min-width="0" text>
+            <v-icon>mdi-home-export-outline</v-icon>
           </v-btn>
-        </template>
+        </a>
 
-        <v-list>
-          <v-list-item>
-            <v-list-item v-on:click.prevent="logout">Выйти</v-list-item>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
+        <v-menu
+          bottom
+          left
+          offset-y
+          origin="top right"
+          transition="scale-transition"
+        >
+          <template v-slot:activator="{ attrs, on }">
+            <v-btn class="ml-2" min-width="0" text v-bind="attrs" v-on="on">
+              <v-icon>mdi-account</v-icon>
+            </v-btn>
+          </template>
 
-    <v-main>
-      <!-- <keep-alive>
+          <v-list>
+            <v-list-item>
+              <v-list-item v-on:click.prevent="logout">Выйти</v-list-item>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-app-bar>
+
+      <v-main>
+        <!-- <keep-alive>
         <component
           :is="selecteditem.data.component"
           :chosen="selected"
         ></component>
       </keep-alive> -->
-      <slot></slot>
-    </v-main>
+        <slot></slot>
+      </v-main>
+    </template>
+    <v-overlay color="white" :value="overlay">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="green"
+        indeterminate
+      ></v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
 <script>
 import axios from 'axios'
 import { createNamespacedHelpers } from 'vuex'
+import { LOADING_GET_LANG } from '@/constants/loadingIds'
 
-const { mapActions } = createNamespacedHelpers('auth')
+const { mapGetters: mapGettersAuth, mapActions: mapActionsAuth } =
+  createNamespacedHelpers('auth')
+const { mapActions: mapActionsLang } = createNamespacedHelpers('lang')
+const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
 // import SettingsBase from './Settings/Base/Index.vue'
 // import SettingsCurrency from './Settings/Currency/Index.vue'
 // import SettingsMenu from './Settings/Menu/Index.vue'
@@ -370,17 +380,25 @@ export default {
     }
   },
   watch: {
-    selectItem: function () {
-      window.history.replaceState(
-        null,
-        null,
-        window.location.origin +
-          '/home?divide=' +
-          this.selecteditem.data.component
-      )
-    },
+    // selectItem: function () {
+    //   window.history.replaceState(
+    //     null,
+    //     null,
+    //     window.location.origin +
+    //       '/home?divide=' +
+    //       this.selecteditem.data.component
+    //   )
+    // },
+  },
+  beforeMount() {
+    this.getLang()
   },
   computed: {
+    ...mapGettersAuth(['getUser']),
+    ...mapGettersLoading(['getLoadingIds']),
+    overlay() {
+      return this.getLoadingIds.includes(LOADING_GET_LANG)
+    },
     menus() {
       return [
         {
@@ -596,8 +614,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['logoutUser']),
-
+    ...mapActionsAuth(['logoutUser']),
+    ...mapActionsLang(['getLang']),
     logout: function () {
       this.logoutUser().then(() => this.$router.push({ name: 'Login' }))
     },
@@ -661,3 +679,12 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.background-sidebar {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+    url('../assets/sidebar-1.jpg');
+  background-position: center;
+  background-size: cover;
+}
+</style>
