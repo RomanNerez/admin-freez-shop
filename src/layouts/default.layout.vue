@@ -248,6 +248,18 @@
                 </v-list>
             </v-menu>-->
 
+        <v-select
+          style="max-width: 80px"
+          v-model="selectLang"
+          :items="getLangs"
+          hide-details
+          item-value="local"
+          item-text="local"
+          label="Язык"
+          color="green"
+          solo
+          dense
+        ></v-select>
         <a href="/" target="_blank" style="text-decoration: unset">
           <v-btn class="ml-2" min-width="0" text>
             <v-icon>mdi-home-export-outline</v-icon>
@@ -303,7 +315,11 @@ import { LOADING_GET_LANG } from '@/constants/loadingIds'
 
 const { mapGetters: mapGettersAuth, mapActions: mapActionsAuth } =
   createNamespacedHelpers('auth')
-const { mapActions: mapActionsLang } = createNamespacedHelpers('lang')
+const {
+  mapGetters: mapGettersLang,
+  mapMutations: mapMutationsLang,
+  mapActions: mapActionsLang,
+} = createNamespacedHelpers('lang')
 const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
 // import SettingsBase from './Settings/Base/Index.vue'
 // import SettingsCurrency from './Settings/Currency/Index.vue'
@@ -396,6 +412,15 @@ export default {
   computed: {
     ...mapGettersAuth(['getUser']),
     ...mapGettersLoading(['getLoadingIds']),
+    ...mapGettersLang(['getLangs', 'getSelectLocal']),
+    selectLang: {
+      get() {
+        return this.getSelectLocal
+      },
+      set(value) {
+        this.updateSelectLocal(value)
+      },
+    },
     overlay() {
       return this.getLoadingIds.includes(LOADING_GET_LANG)
     },
@@ -616,6 +641,7 @@ export default {
   methods: {
     ...mapActionsAuth(['logoutUser']),
     ...mapActionsLang(['getLang']),
+    ...mapMutationsLang(['updateSelectLocal']),
     logout: function () {
       this.logoutUser().then(() => this.$router.push({ name: 'Login' }))
     },

@@ -33,7 +33,7 @@
         style="height: 292px"
       >
         <form action="#">
-          <v-row v-for="(item, index) in getOptions.socials" :key="index">
+          <v-row v-for="(item, index) in socials" :key="index">
             <v-col sm="2">
               <v-hover>
                 <template v-slot:default="{ hover }">
@@ -99,19 +99,25 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('settings')
+const { mapGetters } = createNamespacedHelpers('settings/options')
 
 export default {
   name: 'Socialize',
+  data: () => ({
+    socials: [],
+  }),
   computed: {
     ...mapGetters(['getOptions']),
   },
+  mounted() {
+    this.__initData()
+  },
   methods: {
+    __initData() {
+      this.socials = this.getOptions?.socials ?? []
+    },
     addSocial: function () {
-      if (!this.getOptions.socials) {
-        this.getOptions.socials = []
-      }
-      this.getOptions.socials.push({
+      this.socials.push({
         image: '',
         name: '',
         link: '',

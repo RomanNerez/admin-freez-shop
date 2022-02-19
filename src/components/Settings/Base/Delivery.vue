@@ -18,7 +18,7 @@
 
           <v-tooltip top>
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" v-on:click="addDelivery"> mdi-plus </v-icon>
+              <v-icon v-on="on" @click="addDelivery"> mdi-plus </v-icon>
             </template>
             <span>Вариант доставки</span>
           </v-tooltip>
@@ -26,18 +26,6 @@
         <span class="mb-6 font-weight-regular user-info__title"
           >Способы доставки</span
         >
-
-        <v-select
-          style="max-width: 80px"
-          v-model="getSelect"
-          :items="getLangs"
-          item-value="id"
-          item-text="local"
-          label="Язык"
-          color="green"
-          solo
-          dense
-        ></v-select>
       </v-card-title>
 
       <v-container
@@ -47,7 +35,7 @@
         <form action="#">
           <v-row
             class="delivery-item"
-            v-for="(_item, index) in getOptions.delivery"
+            v-for="(_item, index) in delivery"
             :key="index"
           >
             <v-col sm="11" class="py-0">
@@ -55,7 +43,7 @@
                 <v-col sm="8">
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
-                      v-model="getOptions.content[local].delivery[index].name"
+                      v-model="content[getSelectLocal].delivery[index].name"
                       label="Название"
                       color="green"
                       outlined
@@ -69,12 +57,7 @@
                 <v-col sm="4" class="pr-0">
                   <v-select
                     v-model="_item.api"
-                    :items="[
-                      {
-                        name: 'Новая почта',
-                        val: 'np',
-                      },
-                    ]"
+                    :items="SELECT.API"
                     clearable
                     item-value="val"
                     item-text="name"
@@ -116,28 +99,7 @@
                 <v-col sm="4">
                   <v-select
                     v-model="_item.inputs"
-                    :items="[
-                      {
-                        name: 'Страна',
-                        val: 'country',
-                      },
-                      {
-                        name: 'Населенный пункт',
-                        val: 'locality',
-                      },
-                      {
-                        name: 'Адрес',
-                        val: 'address',
-                      },
-                      {
-                        name: 'Индекс',
-                        val: 'code',
-                      },
-                      {
-                        name: 'Отделение',
-                        val: 'branch',
-                      },
-                    ]"
+                    :items="SELECT.FORM_INPUT"
                     clearable
                     multiple
                     chips
@@ -154,24 +116,7 @@
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-select
                       v-model="_item.payment"
-                      :items="[
-                        {
-                          name: 'Наложенный платёж',
-                          val: 'pod',
-                        },
-                        {
-                          name: 'Наличные',
-                          val: 'cash',
-                        },
-                        {
-                          name: 'Онлайн оплата',
-                          val: 'online',
-                        },
-                        {
-                          name: 'Расчетный счет',
-                          val: 'cashless',
-                        },
-                      ]"
+                      :items="SELECT.PAYMENTS"
                       clearable
                       multiple
                       chips
@@ -208,23 +153,48 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import { ValidationProvider } from 'vee-validate'
+import { SELECT } from '@/constants/delivery-select'
+import { iLang } from '@/interfaces/iLang'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-const { mapGetters: mapGettersSettings } = createNamespacedHelpers('settings')
+const { mapGetters: mapGettersSettings } =
+  createNamespacedHelpers('settings/options')
 
 export default {
   name: 'Delivery',
   components: { ValidationProvider },
+  data: () => ({
+    SELECT,
+    delivery: [],
+    content: {},
+  }),
   computed: {
-    ...mapGettersLang(['getLangs', 'getSelect']),
+    ...mapGettersLang(['getLangs', 'getSelect', 'getSelectLocal']),
     ...mapGettersSettings(['getOptions']),
-    local() {
-      return this.getLangs.find((item) => item.id === this.getSelect).local
-    },
+  },
+  beforeMount() {
+    this.content = iLang(this.getLangs, {
+      delivery: [],
+    })
+  },
+  mounted() {
+    this.__initData()
   },
   methods: {
+    __initData() {
+      this.delivery = this.getOptions?.delivery ?? []
+
+      const content = this.getOptions?.content
+      if (!content) return
+      this.getLangs.forEach(({ local }) => {
+        if (!content[local]) return
+
+        this.content[local].delivery =
+          content[local]?.delivery ?? this.content[local].delivery
+      })
+    },
     addDelivery: function () {
-      this.data.delivery.push({
+      this.delivery.push({
         inputs: null,
         payment: null,
         api: null,
@@ -234,17 +204,17 @@ export default {
         },
       })
 
-      this.getLangs.forEach((lang) => {
-        this.data.content[lang.local].delivery.push({
+      this.getLangs.forEach(({ local }) => {
+        this.content[local].delivery.push({
           name: '',
         })
       })
     },
     rmDelivery: function (index) {
-      this.data.delivery.splice(index, 1)
+      this.delivery.splice(index, 1)
 
-      this.getLangs.forEach((lang) => {
-        this.data.content[lang.local].delivery.splice(index, 1)
+      this.getLangs.forEach(({ local }) => {
+        this.content[local].delivery.splice(index, 1)
       })
     },
   },

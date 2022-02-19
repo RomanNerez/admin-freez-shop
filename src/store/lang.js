@@ -23,6 +23,9 @@ export default {
     updateLang(state, payload) {
       state.langs = payload
     },
+    updateSelectLocal(state, local) {
+      state.selectLocal = local
+    },
   },
   actions: {
     async getLang({ commit }) {

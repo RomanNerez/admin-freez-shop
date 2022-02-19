@@ -21,18 +21,6 @@
           style="margin-right: -80px"
           >Данные магазина</span
         >
-
-        <v-select
-          style="max-width: 80px"
-          v-model="getSelect"
-          :items="getLangs"
-          item-value="id"
-          item-text="local"
-          label="Язык"
-          color="green"
-          solo
-          dense
-        ></v-select>
       </v-card-title>
 
       <v-container class="pa-8 pt-4 content-page">
@@ -192,8 +180,11 @@
 import { createNamespacedHelpers } from 'vuex'
 import { ValidationProvider } from 'vee-validate'
 import { iLang } from '@/interfaces/iLang'
+import { setMedia } from '@/services/get-media'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
+const { mapGetters: mapGettersSettings } =
+  createNamespacedHelpers('settings/options')
 
 export default {
   components: {
@@ -205,6 +196,10 @@ export default {
     logo_light: null,
     logo_color: null,
   }),
+  computed: {
+    ...mapGettersLang(['getLangs', 'getSelectLocal']),
+    ...mapGettersSettings(['getOptions']),
+  },
   beforeMount() {
     this.content = iLang(this.getLangs, {
       title: '',
@@ -213,8 +208,34 @@ export default {
       schedule: '',
     })
   },
-  computed: {
-    ...mapGettersLang(['getLangs', 'getSelect', 'getSelectLocal']),
+  mounted() {
+    this.__initData()
+  },
+  methods: {
+    __initData() {
+      const logoFields = ['logo_dark', 'logo_light', 'logo_color']
+      logoFields.forEach((field) => {
+        this[field] = this.getOptions[field]
+          ? this.getOptions[field]
+          : this[field]
+      })
+
+      const content = this.getOptions?.content
+      if (!content) return
+      const contentFields = ['title', 'short_desc', 'desc', 'schedule']
+
+      this.getLangs.forEach(({ local }) => {
+        contentFields.forEach((field) => {
+          if (!content[local]) return
+
+          this.content[local][field] =
+            content?.[local]?.[field] ?? this.content[local][field]
+        })
+      })
+    },
+    setMedia(current, index, type) {
+      setMedia(current, index, type)
+    },
   },
 }
 </script>

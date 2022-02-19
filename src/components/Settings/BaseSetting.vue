@@ -3,8 +3,8 @@
     <validation-observer ref="observer">
       <v-container fluid tag="section">
         <v-row v-if="!overlay">
-          <Socialize />
-          <AddressShop />
+          <Socialize ref="socialize" />
+          <AddressShop ref="address-shop" />
           <Contacts />
           <DataShop />
           <Delivery />
@@ -89,7 +89,7 @@ const {
   mapGetters: mapGettersSettings,
   mapMutations: mapMutationsSettings,
   mapActions: mapActionsSettings,
-} = createNamespacedHelpers('settings')
+} = createNamespacedHelpers('settings/options')
 const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
 
 export default {
@@ -176,7 +176,6 @@ export default {
       }
     },
     data() {
-      // return this.$store.getters.optionsData
       return this.getOptions
     },
     local() {
@@ -188,88 +187,47 @@ export default {
   methods: {
     ...mapMutationsSettings(['updateOptions']),
     ...mapActionsSettings(['findOptions']),
-    selectFile: function () {
-      window.open(
-        '/laravel-filemanager?type=image',
-        'FileManager',
-        'width=1280,height=700'
-      )
-      return new Promise((resolve) => {
-        window.SetUrl = (items) => {
-          resolve(items.slice(0, 6))
-        }
-      })
-    },
-    setMedia: function (current, index, type) {
-      this.selectFile().then((response) => {
-        if (type !== -1) {
-          const replace = type ? 0 : response.length
-
-          current.splice(
-            index,
-            replace,
-            ...response.map((item, index) => {
-              return {
-                id: index + +new Date(),
-                source: item.url,
-              }
-            })
-          )
-
-          if (current.length > 6) {
-            const delta = current.length - 6
-            current.splice(-delta, delta)
-          }
-        } else {
-          let source = response[0].url
-
-          if (typeof index === 'number') {
-            current.splice(index, 1, source)
-          } else {
-            current[index] = source
-          }
-        }
-      })
-    },
-    // addDelivery: function () {
-    //   this.data.delivery.push({
-    //     inputs: null,
-    //     payment: null,
-    //     api: null,
-    //     price: {
-    //       rate: 0,
-    //       sum: 0,
-    //     },
-    //   })
-
-    //   this.getLangs.forEach((lang) => {
-    //     this.data.content[lang.local].delivery.push({
-    //       name: '',
-    //     })
-    //   })
-    // for (let i = 0; i < this.getLangs.length; i++) {
-    //   let local = this.langs.items[i].local
-
-    //   this.data.content[local].delivery.push({
-    //     name: '',
-    //   })
-    // }
-    // },
-    // rmDelivery: function (index) {
-    //   this.data.delivery.splice(index, 1)
-
-    //   this.getLangs.forEach((lang) => {
-    //     this.data.content[lang.local].delivery.splice(index, 1)
+    // selectFile: function () {
+    //   window.open(
+    //     '/laravel-filemanager?type=image',
+    //     'FileManager',
+    //     'width=1280,height=700'
+    //   )
+    //   return new Promise((resolve) => {
+    //     window.SetUrl = (items) => {
+    //       resolve(items.slice(0, 6))
+    //     }
     //   })
     // },
-    // addSocial: function () {
-    //   if (!this.data.socials) {
-    //     this.data.socials = []
-    //   }
-    //   this.data.socials.push({
-    //     image: '',
-    //     name: '',
-    //     link: '',
+    // setMedia: function (current, index, type) {
+    //   selectFile().then((response) => {
+    //     if (type !== -1) {
+    //       const replace = type ? 0 : response.length
+
+    //       current.splice(
+    //         index,
+    //         replace,
+    //         ...response.map((item, index) => {
+    //           return {
+    //             id: index + +new Date(),
+    //             source: item.url,
+    //           }
+    //         })
+    //       )
+
+    //       if (current.length > 6) {
+    //         const delta = current.length - 6
+    //         current.splice(-delta, delta)
+    //       }
+    //     } else {
+    //       let source = response[0].url
+
+    //       if (typeof index === 'number') {
+    //         current.splice(index, 1, source)
+    //       } else {
+    //         current[index] = source
+    //       }
+    //     }
     //   })
     // },
     update: function () {

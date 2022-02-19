@@ -19,20 +19,9 @@
         <span
           class="mb-6 font-weight-regular user-info__title"
           style="margin-right: -80px"
-          >Адрес организации</span
         >
-
-        <v-select
-          style="max-width: 80px"
-          v-model="getSelect"
-          :items="getLangs"
-          item-value="id"
-          item-text="local"
-          label="Язык"
-          color="green"
-          solo
-          dense
-        ></v-select>
+          Адрес организации
+        </span>
       </v-card-title>
 
       <v-container class="pa-8 pt-4 content-page">
@@ -46,7 +35,7 @@
                 hide-details
                 dense
                 class="mb-6"
-                v-model="content[getSelectLocal].addr.country"
+                v-model="content[getSelectLocal].country"
                 :error-messages="errors"
               ></v-text-field>
             </validation-provider>
@@ -59,7 +48,7 @@
                 hide-details
                 dense
                 class="mb-6"
-                v-model="content[getSelectLocal].addr.city"
+                v-model="content[getSelectLocal].city"
                 :error-messages="errors"
               ></v-text-field>
             </validation-provider>
@@ -72,7 +61,7 @@
                 hide-details
                 dense
                 class="mb-6"
-                v-model="content[getSelectLocal].addr.street"
+                v-model="content[getSelectLocal].street"
                 :error-messages="errors"
               ></v-text-field>
             </validation-provider>
@@ -85,7 +74,7 @@
                     outlined
                     hide-details
                     dense
-                    v-model="content[getSelectLocal].addr.house"
+                    v-model="content[getSelectLocal].house"
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -99,7 +88,7 @@
                     outlined
                     hide-details
                     dense
-                    v-model="content[getSelectLocal].addr.code"
+                    v-model="content[getSelectLocal].code"
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -118,7 +107,8 @@ import { ValidationProvider } from 'vee-validate'
 import { iLang } from '@/interfaces/iLang'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-const { mapGetters: mapGettersSettings } = createNamespacedHelpers('settings')
+const { mapGetters: mapGettersSettings } =
+  createNamespacedHelpers('settings/options')
 
 export default {
   components: {
@@ -129,23 +119,27 @@ export default {
   }),
   beforeMount() {
     this.content = iLang(this.getLangs, {
-      addr: {
-        city: '',
-        code: 0,
-        house: '',
-        street: '',
-        country: '',
-      },
+      city: '',
+      code: 0,
+      house: '',
+      street: '',
+      country: '',
     })
   },
-  mounted() {
-    if (this.getOptions?.content) {
-      this.content = this.getOptions.content
-    }
-  },
   computed: {
-    ...mapGettersLang(['getLangs', 'getSelect', 'getSelectLocal']),
+    ...mapGettersLang(['getLangs', 'getSelectLocal']),
     ...mapGettersSettings(['getOptions']),
+  },
+  mounted() {
+    this.__initData()
+  },
+  methods: {
+    __initData() {
+      this.getLangs.forEach(({ local }) => {
+        this.content[local] =
+          this.getOptions?.content?.[local]?.addr ?? this.content[local]
+      })
+    },
   },
 }
 </script>

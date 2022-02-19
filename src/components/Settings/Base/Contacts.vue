@@ -60,7 +60,7 @@
 import { createNamespacedHelpers } from 'vuex'
 import { ValidationProvider } from 'vee-validate'
 
-const { mapGetters } = createNamespacedHelpers('settings')
+const { mapGetters } = createNamespacedHelpers('settings/options')
 
 export default {
   components: {
