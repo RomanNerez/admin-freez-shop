@@ -47,7 +47,11 @@
               :key="index"
               class="px-3 my-2"
               :class="{ 'is-active': selectItem === child.component }"
-              v-on:click="selectItem = child.component"
+              v-on:click="
+                child.to
+                  ? $router.push(child.to)
+                  : (selectItem = child.component)
+              "
             >
               <v-list-item-icon class="my-3 mr-4 ml-1">
                 <v-icon>{{ child.icon }}</v-icon>
@@ -434,11 +438,13 @@ export default {
               title: 'Основное',
               icon: 'mdi-cube-outline',
               component: 'settings-base',
+              to: { name: 'Base' },
             },
             {
               title: 'Валюты',
               icon: 'mdi-currency-usd',
               component: 'settings-currency',
+              to: { name: 'Currency' },
             },
             {
               title: 'Меню',

@@ -36,6 +36,15 @@ const routes = [
         },
         component: () => import('@/components/Settings/BaseSetting.vue'),
       },
+      {
+        path: 'currency',
+        name: 'Currency',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Settings/CurrencySetting.vue'),
+      },
     ],
   },
   {

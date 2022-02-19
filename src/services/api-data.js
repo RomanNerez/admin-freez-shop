@@ -24,3 +24,12 @@ export async function getOptions() {
     return null
   }
 }
+
+export async function getCurrency() {
+  try {
+    const { data } = await initAxios().get(DATA.SETTINGS.CURRENCY)
+    return data
+  } catch (e) {
+    return null
+  }
+}
