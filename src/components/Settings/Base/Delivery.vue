@@ -168,6 +168,18 @@ export default {
     delivery: [],
     content: {},
   }),
+  watch: {
+    getSelectLocal(a, b) {
+      for (let key in this.content[b]) {
+        const delivery = this.content[a][key]
+        delivery.forEach((item, i) => {
+          if (!item.name) {
+            this.content[a][key][i] = this.content[b][key][i]
+          }
+        })
+      }
+    },
+  },
   computed: {
     ...mapGettersLang(['getLangs', 'getSelect', 'getSelectLocal']),
     ...mapGettersSettings(['getOptions']),
@@ -195,8 +207,8 @@ export default {
     },
     addDelivery: function () {
       this.delivery.push({
-        inputs: null,
-        payment: null,
+        inputs: [],
+        payment: [],
         api: null,
         price: {
           rate: 0,

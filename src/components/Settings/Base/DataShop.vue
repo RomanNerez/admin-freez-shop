@@ -196,6 +196,17 @@ export default {
     logo_light: null,
     logo_color: null,
   }),
+  watch: {
+    getSelectLocal(a, b) {
+      for (let key in this.content[b]) {
+        const item = this.content[a][key]
+
+        if (!item && this.content[b]) {
+          this.content[a][key] = this.content[b][key]
+        }
+      }
+    },
+  },
   computed: {
     ...mapGettersLang(['getLangs', 'getSelectLocal']),
     ...mapGettersSettings(['getOptions']),

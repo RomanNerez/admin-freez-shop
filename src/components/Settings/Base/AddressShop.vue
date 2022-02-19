@@ -117,6 +117,17 @@ export default {
   data: () => ({
     content: {},
   }),
+  watch: {
+    getSelectLocal(a, b) {
+      for (let key in this.content[b]) {
+        const item = this.content[a][key]
+
+        if (!item && this.content[b]) {
+          this.content[a][key] = this.content[b][key]
+        }
+      }
+    },
+  },
   beforeMount() {
     this.content = iLang(this.getLangs, {
       city: '',

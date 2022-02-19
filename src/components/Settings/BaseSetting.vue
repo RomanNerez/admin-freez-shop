@@ -5,9 +5,9 @@
         <v-row v-if="!overlay">
           <Socialize ref="socialize" />
           <AddressShop ref="address-shop" />
-          <Contacts />
-          <DataShop />
-          <Delivery />
+          <Contacts ref="contacts" />
+          <DataShop ref="datashop" />
+          <Delivery ref="delivery" />
         </v-row>
         <v-sheet
           v-else
@@ -120,36 +120,6 @@ export default {
     }
   },
   watch: {
-    local: function (a, b) {
-      for (let key in this.data.content[b]) {
-        let item = this.data.content[a][key]
-
-        if (key !== 'addr') {
-          if (!item) {
-            this.data.content[a][key] = this.data.content[b][key]
-          } else if (typeof item === 'object') {
-            item.forEach((values, index) => {
-              for (let name in values) {
-                let val = values[name]
-
-                if (!val) {
-                  this.data.content[a][key][index][name] =
-                    this.data.content[b][key][index][name]
-                }
-              }
-            })
-          }
-        } else {
-          for (let name in this.data.content[b][key]) {
-            let addr = this.data.content[a][key][name]
-
-            if (!addr) {
-              this.data.content[a][key][name] = this.data.content[b][key][name]
-            }
-          }
-        }
-      }
-    },
     'alert.option': {
       deep: true,
       handler() {
@@ -176,60 +146,33 @@ export default {
       }
     },
     data() {
-      return this.getOptions
-    },
-    local() {
-      return (
-        this.getLangs.find((item) => item.id === this.getSelect)?.local || ''
-      )
+      const content = {}
+      this.getLangs.forEach(({ local }) => {
+        content[local] = {
+          ...this.getOptions.content[local],
+          ...this.$refs.delivery.content[local],
+          ...this.$refs.datashop.content[local],
+          addr: {
+            ...this.$refs['address-shop'].content[local],
+          },
+        }
+      })
+      return {
+        ...this.getOptions,
+        content,
+        socials: this.$refs.socialize.socials,
+        delivery: this.$refs.delivery.delivery,
+        emails: this.$refs.contacts.emails,
+        phones: this.$refs.contacts.phones,
+        logo_color: this.$refs.datashop.logo_color,
+        logo_dark: this.$refs.datashop.logo_dark,
+        logo_light: this.$refs.datashop.logo_light,
+      }
     },
   },
   methods: {
     ...mapMutationsSettings(['updateOptions']),
     ...mapActionsSettings(['findOptions']),
-    // selectFile: function () {
-    //   window.open(
-    //     '/laravel-filemanager?type=image',
-    //     'FileManager',
-    //     'width=1280,height=700'
-    //   )
-    //   return new Promise((resolve) => {
-    //     window.SetUrl = (items) => {
-    //       resolve(items.slice(0, 6))
-    //     }
-    //   })
-    // },
-    // setMedia: function (current, index, type) {
-    //   selectFile().then((response) => {
-    //     if (type !== -1) {
-    //       const replace = type ? 0 : response.length
-
-    //       current.splice(
-    //         index,
-    //         replace,
-    //         ...response.map((item, index) => {
-    //           return {
-    //             id: index + +new Date(),
-    //             source: item.url,
-    //           }
-    //         })
-    //       )
-
-    //       if (current.length > 6) {
-    //         const delta = current.length - 6
-    //         current.splice(-delta, delta)
-    //       }
-    //     } else {
-    //       let source = response[0].url
-
-    //       if (typeof index === 'number') {
-    //         current.splice(index, 1, source)
-    //       } else {
-    //         current[index] = source
-    //       }
-    //     }
-    //   })
-    // },
     update: function () {
       this.$refs.observer.validate().then((check) => {
         for (let i = 0; i < this.getLangs.length; i++) {
