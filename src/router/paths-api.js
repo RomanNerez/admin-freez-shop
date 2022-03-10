@@ -9,5 +9,6 @@ export const DATA = {
     CURRENCY: buildPath('/currency'),
     CURRENCY_CREATE: buildPath('/currency/create'),
     CURRENCY_EDIT: buildPath('/currency/edit'),
+    CURRENCY_DELETE: buildPath('/currency/delete'),
   },
 }

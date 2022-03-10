@@ -34,7 +34,7 @@
             ></v-select>
 
             <v-btn
-              :loading="pending"
+              :loading="loadingBtn"
               class="b-btn"
               color="green darken-1"
               v-on:click="editCategory"
@@ -64,28 +64,11 @@
             </v-tabs>
           </template>
           <ValidationObserver ref="form">
-            <CurrencyBase v-show="tabSelect === 0" :local="lang" />
-            <CurrencyInfo v-show="tabSelect === 1" :local="lang" />
+            <CurrencyBase v-show="tabSelect === 0" ref="base" :local="lang" />
+            <CurrencyInfo v-show="tabSelect === 1" ref="info" :local="lang" />
           </ValidationObserver>
         </v-form>
       </v-card>
-      <template>
-        <div class="text-center ma-2">
-          <v-snackbar v-model="snackbar.show">
-            <span v-html="snackbar.text"></span>
-            <template v-slot:action="{ attrs }">
-              <v-btn
-                color="pink"
-                text
-                v-bind="attrs"
-                @click="snackbar.show = false"
-              >
-                Закрыть
-              </v-btn>
-            </template>
-          </v-snackbar>
-        </div>
-      </template>
     </div>
   </v-overlay>
 </template>
@@ -98,10 +81,15 @@ import { STATUSES } from '@/constants/common-statuses'
 import CurrencyBase from './CurrencyBase.vue'
 import CurrencyInfo from './CurrencyInfo.vue'
 import IconCloseModel from '@/components/IconCloseModel.vue'
+import { LOADING_CREATE_CURRENCY } from '@/constants/loadingIds'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-const { mapGetters: mapGettersCurrency, mapMutations: mapMutationsCurrency } =
-  createNamespacedHelpers('settings/currency')
+const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
+const {
+  mapGetters: mapGettersCurrency,
+  mapMutations: mapMutationsCurrency,
+  mapActions: mapActionsCurrency,
+} = createNamespacedHelpers('settings/currency')
 
 export default {
   components: {
@@ -116,10 +104,6 @@ export default {
       pending: false,
       lang: process.env.VUE_APP_I18N_LOCALE,
       STATUSES,
-      snackbar: {
-        show: false,
-        text: '',
-      },
       status: 1,
       formDialog: false,
     }
@@ -135,87 +119,34 @@ export default {
   computed: {
     ...mapGettersLang(['getLangs']),
     ...mapGettersCurrency(['getFormDialog']),
-    getLocal() {
-      return this.getLangs[0].local
-    },
-    getComponent() {
-      return this.components
+    ...mapGettersLoading(['getLoadingIds']),
+    loadingBtn() {
+      return this.getLoadingIds.includes(LOADING_CREATE_CURRENCY)
     },
   },
   methods: {
     ...mapMutationsCurrency(['updateFormDialog']),
+    ...mapActionsCurrency(['createCurrency']),
     closeModal(e) {
       this.__confirm(e, 'set_editor', () => {
         this.updateFormDialog(false)
       })
     },
-    editCategory() {
-      this.$refs.form.validateWithInfo().then((check) => {
-        const data = {
-          code: '',
-          symbol: '',
-          status: 1,
-          content: {
-            ru: {
-              name: 'test',
-              abbrev: 'test',
-            },
-            ua: {
-              name: 'test',
-              abbrev: 'test',
-            },
-          },
-        }
-        console.log(check, data)
+    create(info) {
+      if (!info.isValid) {
         setTimeout(this.$refs.form.reset, 3000)
-      })
-      // if (!this.validate()) {
-      //   return
-      // }
-      // let input = this.editor,
-      //   path = window.location.pathname + '/currency/',
-      //   url = this.selected ? path + 'edit' : path + 'create'
-      // this.pending = true
-      // axios
-      //   .post(url, {
-      //     _token: window._token,
-      //     data: input,
-      //   })
-      //   .then((response) => {
-      //     setTimeout(() => {
-      //       if (this.selected) {
-      //         this.$store.commit('editCurrencyList', input)
-      //       } else {
-      //         this.$store.commit('addCurrencyList', response.data)
-      //       }
-      //       this.editor = {
-      //         code: '',
-      //         symbol: '',
-      //         status: 1,
-      //       }
-      //       this.setup()
-      //       this.$emit('update:formDialog', false)
-      //       this.$emit('update:selected', null)
-      //       //this.$v.reset();
-      //     }, 200)
-      //   })
-      //   .catch((error) => {
-      //     let data = error.response.data
-      //     if (data.errors) {
-      //       this.snackbar.text = Object.values(data.errors)[0][0]
-      //     } else if (data.message) {
-      //       this.snackbar.text = data.message
-      //     } else {
-      //       this.snackbar.text = 'Неизвестная ошибка, повторите попытку'
-      //     }
-      //     this.snackbar.show = true
-      //   })
-      //   .finally(() => {
-      //     this.pending = false
-      //     setTimeout(() => {
-      //       this.$emit('update:edt', false)
-      //     }, 300)
-      //   })
+        return
+      }
+      const data = {
+        code: this.$refs.base.code,
+        symbol: this.$refs.base.code,
+        status: 1,
+        content: this.$refs.info.content,
+      }
+      this.createCurrency(data)
+    },
+    editCategory() {
+      this.$refs.form.validateWithInfo().then(this.create)
     },
   },
 }

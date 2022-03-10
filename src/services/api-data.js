@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { DATA } from '@/router/paths-api'
+import { DataApi } from '@/exceptions/DataApi'
 
 const initAxios = () => {
   const jwt = localStorage.getItem('Authorization')
@@ -7,10 +8,12 @@ const initAxios = () => {
   return axios
 }
 
-const errorBuild = (error) => ({
-  error: true,
-  message: error.message,
-})
+const errorBuild = (error) => {
+  return new DataApi({
+    error: true,
+    message: error.message,
+  })
+}
 
 export async function getLang() {
   try {
@@ -46,6 +49,28 @@ export async function createCurrency(dataCurreny) {
     })
 
     return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function editCurrency(dataCurreny) {
+  try {
+    const { data } = await initAxios().post(DATA.SETTINGS.CURRENCY_EDIT, {
+      data: dataCurreny,
+    })
+
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function deleteCurrency(id) {
+  try {
+    await initAxios().post(DATA.SETTINGS.CURRENCY_DELETE, {
+      id,
+    })
   } catch (e) {
     return errorBuild(e)
   }

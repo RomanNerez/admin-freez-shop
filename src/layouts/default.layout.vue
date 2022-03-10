@@ -309,6 +309,7 @@
         indeterminate
       ></v-progress-circular>
     </v-overlay>
+    <Notification />
   </v-app>
 </template>
 
@@ -316,6 +317,7 @@
 import axios from 'axios'
 import { createNamespacedHelpers } from 'vuex'
 import { LOADING_GET_LANG } from '@/constants/loadingIds'
+import Notification from '@/components/Notification'
 
 const { mapGetters: mapGettersAuth, mapActions: mapActionsAuth } =
   createNamespacedHelpers('auth')
@@ -350,6 +352,7 @@ const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
 // import CrmUsers from './CRM/Users/Index.vue'
 
 export default {
+  components: { Notification },
   // components: {
   //   'settings-base': SettingsBase,
   //   'settings-currency': SettingsCurrency,

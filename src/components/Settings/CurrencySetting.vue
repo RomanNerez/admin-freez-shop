@@ -1,29 +1,5 @@
 <template>
   <v-col>
-    <v-snackbar
-      v-model="alert.show"
-      absolute
-      top
-      right
-      elevation="24"
-      :color="alertColor"
-      :timeout="alert.option.type === 'loading' ? -1 : 4000"
-    >
-      {{ alert.option.text }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          :loading="alert.option.type === 'loading'"
-          color="white"
-          text
-          v-bind="attrs"
-          @click="alert.show = false"
-        >
-          Закрыть
-        </v-btn>
-      </template>
-    </v-snackbar>
-
     <v-container fluid tag="section">
       <list
         :select.sync="selected"
@@ -67,27 +43,6 @@ export default {
       edit: {},
       edt: false,
       loading: false,
-      // components: [
-      //   {
-      //     c: 'currency-base',
-      //     t: 'осн. данные',
-      //     o: {
-      //       disabled: {
-      //         lang: true,
-      //         status: true,
-      //       },
-      //     },
-      //   },
-      //   {
-      //     c: 'currency-info',
-      //     t: 'локализация',
-      //     o: {
-      //       disabled: {
-      //         status: true,
-      //       },
-      //     },
-      //   },
-      // ],
     }
   },
   watch: {
@@ -132,29 +87,6 @@ export default {
   },
   methods: {
     ...mapActionsCurrency(['getCurrency', 'createCurrency']),
-    // save() {
-    //   this.$refs.observer.validate()
-
-    //   return
-    // if (this.valid(null)) {
-    //   this.loading = true
-    //   this.createCurrency(this.edit)
-    // axios.post(DATA.SETTINGS.CURRENCY_CREATE, {
-    //     _token: window._token,
-    //     data: this.edit,
-    //   })
-    //   .then(() => {})
-    //   .catch(() => {
-    //     this.$emit('update:alert', {
-    //       type: 'error',
-    //       text: 'Неизвестная ошибка, повторите попытку',
-    //     })
-    //   })
-    //   .finally(() => {
-    //     this.loading = false
-    //   })
-    // }
-    //},
   },
 }
 </script>

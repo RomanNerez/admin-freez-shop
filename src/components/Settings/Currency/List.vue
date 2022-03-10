@@ -37,7 +37,7 @@
           class="d-flex is-disabled"
           transition="fab-transition"
           v-if="isSelectedCurrency"
-          :disabled="alert.type === 'loading'"
+          :disabled="deleting"
         >
           <div class="mx-2"></div>
           <v-tooltip top>
@@ -59,12 +59,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                v-on:click="
-                  $emit('confirm', $event, {
-                    type: 'deleteCurrency',
-                    action: deleteCurrency,
-                  })
-                "
+                v-on:click="__confirm($event, 'deleteCurrency', deleteItem)"
               >
                 mdi-delete
               </v-icon>
@@ -230,26 +225,31 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import axios from 'axios'
+import { LOADING_DELETE_CURRENCY } from '@/constants/loadingIds'
 
-const { mapGetters: mapGettersCurrency, mapMutations: mapMutationsCurrency } =
-  createNamespacedHelpers('settings/currency')
+const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
+const {
+  mapGetters: mapGettersCurrency,
+  mapMutations: mapMutationsCurrency,
+  mapActions: mapActionsCurrency,
+} = createNamespacedHelpers('settings/currency')
 
 export default {
   props: ['edit', 'edt', 'alert'],
-  data: function () {
-    return {
-      location: window.location.origin,
-    }
-  },
   computed: {
     ...mapGettersCurrency(['getList', 'getValues', 'getEditCurrency']),
+    ...mapGettersLoading(['getLoadingIds']),
     isSelectedCurrency() {
       return this.getEditCurrency?.id
+    },
+    deleting() {
+      return !!this.getLoadingIds.includes(LOADING_DELETE_CURRENCY)
     },
   },
   methods: {
     ...mapMutationsCurrency(['updateEditCurrency', 'updateFormDialog']),
-    changeScope: function (index) {
+    ...mapActionsCurrency(['deleteCurrency']),
+    changeScope(index) {
       let item = this.values[index],
         first = item.first
 
@@ -307,34 +307,8 @@ export default {
     emitId: function (item) {
       this.$emit('update:select', item)
     },
-    deleteCurrency: function () {
-      let data = new FormData()
-
-      data.append('_token', window._token)
-      data.append('id', this.isSelectedCurrency)
-
-      this.$emit('update:alert', {
-        type: 'loading',
-        text: 'Удаление валюты и связанных пар...',
-      })
-
-      axios
-        .post(window.location.pathname + '/currency/delete', data)
-        .then((response) => {
-          this.$store.commit('rmCurrencyList', response.data)
-          this.$emit('update:select', null)
-
-          this.$emit('update:alert', {
-            type: 'success',
-            text: 'Валюта и связанные пары успешно удалены',
-          })
-        })
-        .catch(() => {
-          this.$emit('update:alert', {
-            type: 'error',
-            text: 'Неизвестная ошибка, повторите попытку',
-          })
-        })
+    deleteItem() {
+      this.deleteCurrency(this.isSelectedCurrency)
     },
   },
 }
