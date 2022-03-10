@@ -20,7 +20,7 @@
             <v-icon
               :disabled="Boolean(isSelectedCurrency)"
               v-on="on"
-              v-on:click="$emit('update:formState', true)"
+              v-on:click="updateFormDialog(true)"
             >
               mdi-plus
             </v-icon>
@@ -28,9 +28,9 @@
           <span>Добавить валюту</span>
         </v-tooltip>
       </v-sheet>
-      <span class="mb-6 font-weight-regular user-info__title"
-        >Доступные валюты и курсы</span
-      >
+      <span class="mb-6 font-weight-regular user-info__title">
+        Доступные валюты и курсы
+      </span>
       <v-spacer></v-spacer>
       <transition name="fade" mode="out-in">
         <div
@@ -235,7 +235,7 @@ const { mapGetters: mapGettersCurrency, mapMutations: mapMutationsCurrency } =
   createNamespacedHelpers('settings/currency')
 
 export default {
-  props: ['formState', 'edit', 'edt', 'alert'],
+  props: ['edit', 'edt', 'alert'],
   data: function () {
     return {
       location: window.location.origin,
@@ -248,7 +248,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutationsCurrency(['updateEditCurrency']),
+    ...mapMutationsCurrency(['updateEditCurrency', 'updateFormDialog']),
     changeScope: function (index) {
       let item = this.values[index],
         first = item.first

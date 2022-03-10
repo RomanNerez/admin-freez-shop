@@ -1,11 +1,15 @@
-import { getCurrency } from '@/services/api-data'
-import { LOADING_GET_CURRENCY } from '@/constants/loadingIds'
+import { getCurrency, createCurrency } from '@/services/api-data'
+import {
+  LOADING_GET_CURRENCY,
+  LOADING_CREATE_CURRENCY,
+} from '@/constants/loadingIds'
 
 export default {
   namespaced: true,
   state: () => ({
     list: [],
     values: [],
+    formDialog: false,
     editCurrency: null,
   }),
   getters: {
@@ -18,6 +22,9 @@ export default {
     getEditCurrency(state) {
       return state.editCurrency
     },
+    getFormDialog(state) {
+      return state.formDialog
+    },
   },
   mutations: {
     updateList(state, payload) {
@@ -29,6 +36,9 @@ export default {
     updateEditCurrency(state, payload) {
       state.editCurrency = payload
     },
+    updateFormDialog(state, payload) {
+      state.formDialog = payload
+    },
   },
   actions: {
     async getCurrency({ commit }) {
@@ -39,6 +49,12 @@ export default {
 
       commit('updateList', currency.list)
       commit('updateValues', currency.values)
+    },
+    async createCurrency({ commit }, payload) {
+      commit('loading/addLoadingId', LOADING_CREATE_CURRENCY, { root: true })
+      const { currency } = await createCurrency(payload)
+      commit('loading/removeLoadingId', LOADING_CREATE_CURRENCY, { root: true })
+      if (!currency) return
     },
   },
 }

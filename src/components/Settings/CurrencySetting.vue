@@ -27,7 +27,6 @@
     <v-container fluid tag="section">
       <list
         :select.sync="selected"
-        :formState.sync="formDialog"
         :edit="edit"
         :edt.sync="edt"
         :alert.sync="alert.option"
@@ -36,22 +35,14 @@
       </list>
     </v-container>
 
-    <editor
-      :formDialog.sync="formDialog"
-      :edit.sync="edit"
-      :selected.sync="selected"
-      :edt.sync="edt"
-      :components="components"
-    >
-    </editor>
+    <Editor />
   </v-col>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import axios from 'axios'
 import List from './Currency/List.vue'
-import Editor from './Currency/Editor.vue'
+import Editor from './Currency/EditModalRight/Editor.vue'
 
 const { mapActions: mapActionsCurrency } =
   createNamespacedHelpers('settings/currency')
@@ -76,27 +67,27 @@ export default {
       edit: {},
       edt: false,
       loading: false,
-      components: [
-        {
-          c: 'currency-base',
-          t: 'осн. данные',
-          o: {
-            disabled: {
-              lang: true,
-              status: true,
-            },
-          },
-        },
-        {
-          c: 'currency-info',
-          t: 'локализация',
-          o: {
-            disabled: {
-              status: true,
-            },
-          },
-        },
-      ],
+      // components: [
+      //   {
+      //     c: 'currency-base',
+      //     t: 'осн. данные',
+      //     o: {
+      //       disabled: {
+      //         lang: true,
+      //         status: true,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     c: 'currency-info',
+      //     t: 'локализация',
+      //     o: {
+      //       disabled: {
+      //         status: true,
+      //       },
+      //     },
+      //   },
+      // ],
     }
   },
   watch: {
@@ -127,7 +118,7 @@ export default {
     },
   },
   computed: {
-    alertColor: function () {
+    alertColor() {
       switch (this.alert.option.type) {
         case 'loading':
           return 'blue darken-1'
@@ -140,31 +131,30 @@ export default {
     this.getCurrency()
   },
   methods: {
-    ...mapActionsCurrency(['getCurrency']),
-    save: function () {
-      if (this.valid(null)) {
-        let path = window.location.pathname,
-          url = path + '/currency/create'
+    ...mapActionsCurrency(['getCurrency', 'createCurrency']),
+    // save() {
+    //   this.$refs.observer.validate()
 
-        this.loading = true
-
-        axios
-          .post(url, {
-            _token: window._token,
-            data: this.edit,
-          })
-          .then(() => {})
-          .catch(() => {
-            this.$emit('update:alert', {
-              type: 'error',
-              text: 'Неизвестная ошибка, повторите попытку',
-            })
-          })
-          .finally(() => {
-            this.loading = false
-          })
-      }
-    },
+    //   return
+    // if (this.valid(null)) {
+    //   this.loading = true
+    //   this.createCurrency(this.edit)
+    // axios.post(DATA.SETTINGS.CURRENCY_CREATE, {
+    //     _token: window._token,
+    //     data: this.edit,
+    //   })
+    //   .then(() => {})
+    //   .catch(() => {
+    //     this.$emit('update:alert', {
+    //       type: 'error',
+    //       text: 'Неизвестная ошибка, повторите попытку',
+    //     })
+    //   })
+    //   .finally(() => {
+    //     this.loading = false
+    //   })
+    // }
+    //},
   },
 }
 </script>
