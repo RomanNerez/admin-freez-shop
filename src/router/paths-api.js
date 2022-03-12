@@ -6,5 +6,10 @@ export const DATA = {
   SETTINGS: {
     OPTIONS: buildPath('/options'),
     OPTIONS_UPDATE: buildPath('/options/update'),
+    CURRENCY: buildPath('/currency'),
+    CURRENCY_CREATE: buildPath('/currency/create'),
+    CURRENCY_EDIT: buildPath('/currency/edit'),
+    CURRENCY_DELETE: buildPath('/currency/delete'),
+    CURRENCY_UPDATE: buildPath('/currency/update'),
   },
 }

@@ -3,6 +3,7 @@
     <component v-if="$route.meta.layout" :is="layout">
       <router-view></router-view>
     </component>
+    <ConfirmModel />
     <notifications class="custom-notification" group="foo" />
   </div>
 </template>
@@ -11,9 +12,11 @@
 import { DEFAULT_LAYOUT } from './constants/layout'
 import Default from '@/layouts/default.layout.vue'
 import Auth from '@/layouts/auth.layout.vue'
+import ConfirmModel from '@/components/ConfirmModel'
 
 export default {
   components: {
+    ConfirmModel,
     Default,
     Auth,
   },
