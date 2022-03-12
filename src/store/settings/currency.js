@@ -3,10 +3,12 @@ import {
   createCurrency,
   deleteCurrency,
   editCurrency,
+  updateCurrency,
 } from '@/services/api-data'
 import {
   LOADING_GET_CURRENCY,
   LOADING_CREATE_CURRENCY,
+  LOADING_EDIT_CURRENCY,
   LOADING_DELETE_CURRENCY,
 } from '@/constants/loadingIds'
 
@@ -57,6 +59,12 @@ export default {
     deleteValues(state, id) {
       state.values = state.values.filter((item) => item.first !== id)
     },
+    editList(state, payload) {
+      state.list = [
+        ...state.list.filter((item) => item.id !== payload.id),
+        payload,
+      ]
+    },
   },
   actions: {
     async getCurrency({ commit }) {
@@ -81,13 +89,20 @@ export default {
     },
 
     async editCurrency({ commit }, payload) {
-      commit('loading/addLoadingId', LOADING_CREATE_CURRENCY, { root: true })
+      commit('loading/addLoadingId', LOADING_EDIT_CURRENCY, { root: true })
       const currency = await editCurrency(payload)
-      commit('loading/removeLoadingId', LOADING_CREATE_CURRENCY, { root: true })
+      commit('loading/removeLoadingId', LOADING_EDIT_CURRENCY, { root: true })
       if (!currency) return
+      commit('editList', currency.output)
+      commit('updateEditCurrency', null)
+      commit('updateFormDialog', false)
+    },
 
-      commit('addList', currency.list)
-      commit('addValues', currency.values)
+    async updateCurrency(commit, payload) {
+      payload.pending = true
+      const currency = await updateCurrency(payload)
+      payload.pending = false
+      if (!currency) return
     },
 
     async deleteCurrency({ commit }, id) {
@@ -107,10 +122,8 @@ export default {
         { root: true }
       )
 
-      /*const response =*/ await deleteCurrency(id)
+      await deleteCurrency(id)
       commit('loading/removeLoadingId', LOADING_DELETE_CURRENCY, { root: true })
-
-      // if (!response) return
 
       commit('updateEditCurrency', null)
       commit(

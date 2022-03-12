@@ -1,10 +1,5 @@
 <template>
-  <v-overlay
-    v-if="getFormDialog"
-    :value="getFormDialog"
-    class="b-overlay"
-    z-index="7"
-  >
+  <v-overlay :value="getFormDialog" class="b-overlay" z-index="7">
     <div class="b-drawer b-drawer--right" :class="{ active: formDialog }">
       <v-card light class="b-new-category rounded-0 mt-0 mb-0 b-new-article">
         <v-form>
@@ -24,7 +19,7 @@
             <v-select
               disabled
               class="b-lang"
-              v-model.trim="status"
+              v-model.trim="input.status"
               :items="STATUSES"
               item-value="key"
               color="green"
@@ -37,7 +32,7 @@
               :loading="loadingBtn"
               class="b-btn"
               color="green darken-1"
-              v-on:click="editCategory"
+              v-on:click="createOrEditCurrency"
             >
               Сохранить
             </v-btn>
@@ -64,8 +59,13 @@
             </v-tabs>
           </template>
           <ValidationObserver ref="form">
-            <CurrencyBase v-show="tabSelect === 0" ref="base" :local="lang" />
-            <CurrencyInfo v-show="tabSelect === 1" ref="info" :local="lang" />
+            <CurrencyBase v-model="input" v-show="tabSelect === 0" ref="base" />
+            <CurrencyInfo
+              v-model="input.content"
+              v-show="tabSelect === 1"
+              ref="info"
+              :local="lang"
+            />
           </ValidationObserver>
         </v-form>
       </v-card>
@@ -81,7 +81,10 @@ import { STATUSES } from '@/constants/common-statuses'
 import CurrencyBase from './CurrencyBase.vue'
 import CurrencyInfo from './CurrencyInfo.vue'
 import IconCloseModel from '@/components/IconCloseModel.vue'
-import { LOADING_CREATE_CURRENCY } from '@/constants/loadingIds'
+import {
+  LOADING_CREATE_CURRENCY,
+  LOADING_EDIT_CURRENCY,
+} from '@/constants/loadingIds'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
 const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
@@ -104,49 +107,73 @@ export default {
       pending: false,
       lang: process.env.VUE_APP_I18N_LOCALE,
       STATUSES,
-      status: 1,
       formDialog: false,
+      isEdit: false,
+      input: {
+        symbol: '',
+        code: '',
+        status: 1,
+        content: {},
+      },
     }
   },
   watch: {
-    getFormDialog(a) {
-      setTimeout(() => {
-        this.formDialog = a
-        html_hidden('editor')
-      }, 10)
+    input: {
+      deep: true,
+      handler() {
+        this.isEdit = true
+      },
     },
   },
   computed: {
     ...mapGettersLang(['getLangs']),
-    ...mapGettersCurrency(['getFormDialog']),
+    ...mapGettersCurrency(['getFormDialog', 'getEditCurrency']),
     ...mapGettersLoading(['getLoadingIds']),
     loadingBtn() {
-      return this.getLoadingIds.includes(LOADING_CREATE_CURRENCY)
+      return (
+        this.getLoadingIds.includes(LOADING_CREATE_CURRENCY) ||
+        this.getLoadingIds.includes(LOADING_EDIT_CURRENCY)
+      )
     },
+  },
+  mounted() {
+    setTimeout(() => {
+      this.formDialog = this.getFormDialog
+      html_hidden('editor')
+      this.isEdit = false
+    }, 10)
+    if (this.getEditCurrency) this.input = this.getEditCurrency
   },
   methods: {
     ...mapMutationsCurrency(['updateFormDialog']),
-    ...mapActionsCurrency(['createCurrency']),
+    ...mapActionsCurrency(['createCurrency', 'editCurrency']),
     closeModal(e) {
-      this.__confirm(e, 'set_editor', () => {
-        this.updateFormDialog(false)
-      })
+      if (this.isEdit) {
+        this.__confirm(e, 'set_editor', () => {
+          this.updateFormDialog(false)
+        })
+        return
+      }
+      this.updateFormDialog(false)
     },
     create(info) {
       if (!info.isValid) {
         setTimeout(this.$refs.form.reset, 3000)
         return
       }
-      const data = {
-        code: this.$refs.base.code,
-        symbol: this.$refs.base.code,
-        status: 1,
-        content: this.$refs.info.content,
-      }
-      this.createCurrency(data)
+      this.createCurrency(this.input)
     },
-    editCategory() {
-      this.$refs.form.validateWithInfo().then(this.create)
+    edit(info) {
+      if (!info.isValid) {
+        setTimeout(this.$refs.form.reset, 3000)
+        return
+      }
+      this.editCurrency(this.input)
+    },
+    createOrEditCurrency() {
+      this.$refs.form
+        .validateWithInfo()
+        .then(this.getEditCurrency ? this.edit : this.create)
     },
   },
 }

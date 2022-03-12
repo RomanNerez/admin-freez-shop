@@ -29,6 +29,12 @@ export async function getOptions() {
     const { data } = await initAxios().get(DATA.SETTINGS.OPTIONS)
     return data
   } catch (e) {
+    // if (e.response.status === 401) {
+    //   const { data } = await initAxios().post(
+    //     `${process.env.VUE_APP_API_URL}/api/auth/refresh`
+    //   )
+    //   console.log(data)
+    // }
     return errorBuild(e)
   }
 }
@@ -57,6 +63,18 @@ export async function createCurrency(dataCurreny) {
 export async function editCurrency(dataCurreny) {
   try {
     const { data } = await initAxios().post(DATA.SETTINGS.CURRENCY_EDIT, {
+      data: dataCurreny,
+    })
+
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function updateCurrency(dataCurreny) {
+  try {
+    const { data } = await initAxios().post(DATA.SETTINGS.CURRENCY_UPDATE, {
       data: dataCurreny,
     })
 

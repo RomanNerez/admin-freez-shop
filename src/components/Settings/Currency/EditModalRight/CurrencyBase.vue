@@ -16,12 +16,13 @@
           rules="required|max:5"
         >
           <v-text-field
-            v-model.trim="code"
             :label="$t('code-currency')"
             color="green"
             :counter="5"
             outlined
             :error-messages="errors"
+            :value="value.code"
+            @input="changeValue($event, 'code')"
           ></v-text-field>
         </ValidationProvider>
       </v-col>
@@ -32,12 +33,13 @@
           rules="required|max:3"
         >
           <v-text-field
-            v-model="symbol"
             :label="$t('symbol-currency')"
             color="green"
             :counter="3"
             outlined
             :error-messages="errors"
+            :value="value.symbol"
+            @input="changeValue($event, 'symbol')"
           ></v-text-field>
         </ValidationProvider>
       </v-col>
@@ -56,11 +58,20 @@ extend('max', {
 
 export default {
   components: { ValidationProvider },
-  data: function () {
-    return {
-      symbol: '',
-      code: '',
-    }
+  props: {
+    value: {
+      type: Object,
+      required: true,
+    },
+  },
+  methods: {
+    changeValue(value, key) {
+      const data = {
+        ...this.value,
+        [key]: value,
+      }
+      this.$emit('input', data)
+    },
   },
 }
 </script>

@@ -49,6 +49,8 @@ import { ValidationProvider } from 'vee-validate'
 import { iLang } from '@/interfaces/iLang'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
+const { mapGetters: mapGettersCurrency } =
+  createNamespacedHelpers('settings/currency')
 
 export default {
   components: { ValidationProvider },
@@ -58,7 +60,7 @@ export default {
       required: true,
     },
   },
-  data: function () {
+  data() {
     return {
       content: {},
     }
@@ -71,11 +73,22 @@ export default {
         }
       }
     },
+    content: {
+      deep: true,
+      handler(a) {
+        this.$emit('input', a)
+      },
+    },
   },
   computed: {
     ...mapGettersLang(['getLangs']),
+    ...mapGettersCurrency(['getEditCurrency']),
   },
   beforeMount() {
+    if (this.getEditCurrency) {
+      this.content = this.getEditCurrency.content
+      return
+    }
     this.content = iLang(this.getLangs, {
       name: '',
       abbrev: '',

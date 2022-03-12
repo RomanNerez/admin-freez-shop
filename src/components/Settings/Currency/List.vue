@@ -45,7 +45,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                v-on:click="$emit('update:formState', true)"
+                v-on:click="updateFormDialog(true)"
               >
                 mdi-pencil
               </v-icon>
@@ -59,7 +59,11 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                v-on:click="__confirm($event, 'deleteCurrency', deleteItem)"
+                v-on:click="
+                  __confirm($event, 'deleteCurrency', () =>
+                    deleteCurrency(isSelectedCurrency)
+                  )
+                "
               >
                 mdi-delete
               </v-icon>
@@ -117,7 +121,6 @@
                     padding-top: 0 !important;
                     padding-bottom: 0 !important;
                   "
-                  :disabled="alert.type === 'loading'"
                 >
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
@@ -224,7 +227,6 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import axios from 'axios'
 import { LOADING_DELETE_CURRENCY } from '@/constants/loadingIds'
 
 const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
@@ -235,7 +237,7 @@ const {
 } = createNamespacedHelpers('settings/currency')
 
 export default {
-  props: ['edit', 'edt', 'alert'],
+  // props: ['edit', 'edt', 'alert'],
   computed: {
     ...mapGettersCurrency(['getList', 'getValues', 'getEditCurrency']),
     ...mapGettersLoading(['getLoadingIds']),
@@ -248,67 +250,32 @@ export default {
   },
   methods: {
     ...mapMutationsCurrency(['updateEditCurrency', 'updateFormDialog']),
-    ...mapActionsCurrency(['deleteCurrency']),
+    ...mapActionsCurrency(['deleteCurrency', 'updateCurrency']),
     changeScope(index) {
-      let item = this.values[index],
+      let item = this.getValues[index],
         first = item.first
 
       item.first = item.last
       item.last = first
 
-      this.updateValue(item)
+      this.updateCurrency(item)
     },
-    setValue: function (index) {
+    setValue(index) {
       clearTimeout(window._bounce)
       window._bounce = setTimeout(() => {
-        let item = this.values[index]
+        let item = this.getValues[index]
 
         if (item.value) {
-          this.updateValue(item)
+          this.updateCurrency(item)
         }
       }, 1000)
     },
-    updateValue: function (item) {
-      item.pending = true
-
-      axios
-        .post(window.location.pathname + '/currency/update', {
-          _token: window._token,
-          data: item,
-        })
-        .catch(() => {
-          this.$emit('update:alert', {
-            type: 'error',
-            text: 'Неизвестная ошибка, повторите попытку',
-          })
-        })
-        .finally(() => {
-          item.pending = false
-        })
-    },
-    currencyScope: function (id) {
+    currencyScope(id) {
       return this.getList.find((item) => item.id === id).code
     },
-    getString: function (str) {
+    getString(str) {
       let stringArr = str.split(' ', 4)
       return stringArr.join(' ') + ' ...'
-    },
-    // selectedId: function (e, item) {
-    //   if (this.edt) {
-    //     this.$emit('confirm', e, {
-    //       type: 'set_editor',
-    //       input: item,
-    //       action: this.emitId,
-    //     })
-    //   } else {
-    //     this.$emit('update:select', item)
-    //   }
-    // },
-    emitId: function (item) {
-      this.$emit('update:select', item)
-    },
-    deleteItem() {
-      this.deleteCurrency(this.isSelectedCurrency)
     },
   },
 }
