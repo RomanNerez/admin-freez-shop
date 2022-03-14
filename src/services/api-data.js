@@ -48,6 +48,42 @@ export async function getCurrency() {
   }
 }
 
+export async function getMenuData() {
+  try {
+    const { data } = await initAxios().get(DATA.SETTINGS.MENU_GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function getCategories() {
+  try {
+    const { data } = await initAxios().get(DATA.SETTINGS.CATEGORIES_GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function getCollections() {
+  try {
+    const { data } = await initAxios().get(DATA.SETTINGS.COLLECTIONS_GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function getPages() {
+  try {
+    const { data } = await initAxios().get(DATA.SETTINGS.PAGES_GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
 export async function createCurrency(dataCurreny) {
   try {
     const { data } = await initAxios().post(DATA.SETTINGS.CURRENCY_CREATE, {

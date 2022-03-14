@@ -11,5 +11,23 @@ export const DATA = {
     CURRENCY_EDIT: buildPath('/currency/edit'),
     CURRENCY_DELETE: buildPath('/currency/delete'),
     CURRENCY_UPDATE: buildPath('/currency/update'),
+    MENU_GET: buildPath('/menu'),
+    CATEGORIES_GET: buildPath('/category'),
+    COLLECTIONS_GET: buildPath('/collection'),
+    PAGES_GET: buildPath('/page'),
+    MENU: {
+      CREATE: buildPath('/menu/create'),
+      DELETE: buildPath('/menu/delete'),
+      UPDATE: buildPath('/menu/update'),
+    },
+    ARBITRARY_LINKS: {
+      CREATE: buildPath('/arbitrary-links/create'),
+      DELETE: buildPath('/arbitrary-links/edit'),
+    },
+    AREA_VISIBILITY: {
+      ADD: buildPath('/menu-area-visibility/add'),
+      DELETE: buildPath('/menu-area-visibility/delete'),
+      EDIT: buildPath('/menu-area-visibility/edit'),
+    },
   },
 }

@@ -33,6 +33,18 @@ export default {
         )
         commit('updateUser', data)
       } catch (e) {
+        // if (e.response.status === 401) {
+        //   const { data } = await axios.post(
+        //     `${process.env.VUE_APP_API_URL}/api/auth/refresh`,
+        //     {},
+        //     {
+        //       headers: {
+        //         Authorization: jwt,
+        //       },
+        //     }
+        //   )
+        //   localStorage.setItem('Authorization', `Bearer ${data.access_token}`)
+        // }
         // console.log(e)
       }
     },
