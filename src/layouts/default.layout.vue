@@ -327,57 +327,9 @@ const {
   mapActions: mapActionsLang,
 } = createNamespacedHelpers('lang')
 const { mapGetters: mapGettersLoading } = createNamespacedHelpers('loading')
-// import SettingsBase from './Settings/Base/Index.vue'
-// import SettingsCurrency from './Settings/Currency/Index.vue'
-// import SettingsMenu from './Settings/Menu/Index.vue'
-
-// import StoreCategories from './Store/Categories.vue'
-// import StoreGroups from './Store/Groups.vue'
-// import StoreCollection from './Store/Collection/Index.vue'
-// import StoreAttributes from './Store/Attributes.vue'
-// import StoreProducts from './Store/Products.vue'
-
-// import ServicesCategories from './Services/Categories.vue'
-// import ServicesGroups from './Services/Groups.vue'
-// import ServicesAttributes from './Services/Attributes.vue'
-// import ServicesProducts from './Services/Products.vue'
-
-// import ContentCategories from './Content/Categories.vue'
-// import ContentGroups from './Content/Groups.vue'
-// import ContentArticles from './Content/Articles/Index.vue'
-// import ContentPages from './Content/Pages/Index.vue'
-
-// import CrmOrders from './CRM/Orders/Index.vue'
-// import CrmServices from './CRM/Services/Index.vue'
-// import CrmUsers from './CRM/Users/Index.vue'
 
 export default {
   components: { Notification },
-  // components: {
-  //   'settings-base': SettingsBase,
-  //   'settings-currency': SettingsCurrency,
-  //   'settings-menu': SettingsMenu,
-
-  //   'store-categories': StoreCategories,
-  //   'store-groups': StoreGroups,
-  //   'store-collection': StoreCollection,
-  //   'store-attributes': StoreAttributes,
-  //   'store-products': StoreProducts,
-
-  //   'services-categories': ServicesCategories,
-  //   'services-groups': ServicesGroups,
-  //   'services-attributes': ServicesAttributes,
-  //   'services-products': ServicesProducts,
-
-  //   'content-categories': ContentCategories,
-  //   'content-groups': ContentGroups,
-  //   'content-articles': ContentArticles,
-  //   'content-pages': ContentPages,
-
-  //   'crm-orders': CrmOrders,
-  //   'crm-services': CrmServices,
-  //   'crm-users': CrmUsers,
-  // },
   data: function () {
     return {
       location: window.location.origin,
@@ -453,6 +405,7 @@ export default {
               title: 'Меню',
               icon: 'mdi-menu-open',
               component: 'settings-menu',
+              to: { name: 'Menu' },
             },
           ],
         },
