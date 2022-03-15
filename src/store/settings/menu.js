@@ -131,6 +131,7 @@ export default {
     },
     updateAreaVisibility(state, payload) {
       state.area_visibilities = payload
+      state.selectedAreaVisibility = payload[0].id
     },
     updateMenuList(state, payload) {
       state.menuList = payload

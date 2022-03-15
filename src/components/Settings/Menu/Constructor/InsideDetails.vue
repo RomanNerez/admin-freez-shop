@@ -271,7 +271,7 @@ export default {
       this.createMenu(this.dataForMenu)
         .then((response) => {
           this.addMenu({
-            getSelectedAreaVisibility: this.getSelectedAreaVisibility,
+            selectedAreaVisibility: this.getSelectedAreaVisibility,
             items: response.data,
           })
           this.dataForMenu = []

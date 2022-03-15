@@ -83,7 +83,11 @@
 import { createNamespacedHelpers } from 'vuex'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-const { mapGetters: mapGettersMenu } = createNamespacedHelpers('settings/menu')
+const {
+  mapGetters: mapGettersMenu,
+  mapMutations: mapMutationsMenu,
+  mapActions: mapActionsMenu,
+} = createNamespacedHelpers('settings/menu')
 
 export default {
   props: {
@@ -116,7 +120,12 @@ export default {
     }),
   },
   methods: {
-    _setup: function () {
+    ...mapMutationsMenu(['updateChanges', 'addMenu']),
+    ...mapActionsMenu({
+      editArbitraryLinkAction: 'editArbitraryLink',
+      addArbitraryLinkAction: 'addArbitraryLink',
+    }),
+    _setup() {
       var dataEdit = {}
       if (this.dataEdit) {
         dataEdit = JSON.parse(JSON.stringify(this.dataEdit))
@@ -135,17 +144,17 @@ export default {
         this.$set(this.data.content, item.local, data)
       })
     },
-    clearData: function () {
+    clearData() {
       this.data = {
         link: '',
         content: {},
       }
       this._setup()
     },
-    resetForm: function () {
+    resetForm() {
       this.$refs.form.reset()
     },
-    rules: function (requiredMessage) {
+    rules(requiredMessage) {
       return [(v) => !!v || requiredMessage]
     },
     editArbitraryLink() {
@@ -154,8 +163,7 @@ export default {
       }
       this.btnLoading = true
       this.data.area_visibility_id = this.selectedAreaVisibility
-      this.$store
-        .dispatch('ArbitraryLinks/editArbitraryLink', this.data)
+      this.editArbitraryLinkAction(this.data)
         .then((res) => {
           if (res.status === 200) {
             this.data.id = res.data.id
@@ -166,10 +174,10 @@ export default {
         .catch(() => {})
         .finally(() => {
           this.btnLoading = false
-          this.$store.commit('Menu/updateChanges', false)
+          this.updateChanges(false)
         })
     },
-    selectFile: function (obj) {
+    selectFile(obj) {
       console.log(obj)
       window.open(
         '/laravel-filemanager?type=image',
@@ -189,16 +197,15 @@ export default {
         obj.icon = file_path
       }
     },
-    addArbitraryLink: function () {
+    addArbitraryLink() {
       if (!this.$refs.form.validate()) {
         return
       }
       this.btnLoading = true
       this.data.area_visibility_id = this.selectedAreaVisibility
-      this.$store
-        .dispatch('ArbitraryLinks/addArbitraryLink', this.data)
+      this.addArbitraryLinkAction(this.data)
         .then((response) => {
-          this.$store.commit('Menu/addMenu', {
+          this.addMenu({
             selectedAreaVisibility: this.selectedAreaVisibility,
             items: [response.data],
           })
