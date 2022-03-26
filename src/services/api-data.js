@@ -129,3 +129,24 @@ export async function deleteCurrency(id) {
     return errorBuild(e)
   }
 }
+
+export async function copyCategory(id) {
+  try {
+    const { data } = await initAxios().post(DATA.SHOP.CATEGORIES.COPY, {
+      id,
+    })
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function deleteCategory(id) {
+  try {
+    await initAxios().post(DATA.SHOP.CATEGORIES.DELETE, {
+      id,
+    })
+  } catch (e) {
+    return errorBuild(e)
+  }
+}

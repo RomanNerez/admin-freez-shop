@@ -57,6 +57,26 @@ const routes = [
     ],
   },
   {
+    path: '/shop',
+    name: 'Shop',
+    meta: {
+      layout: DEFAULT_LAYOUT,
+      requiresLogin: true,
+    },
+    component: () => import('@/views/shop/Index.vue'),
+    children: [
+      {
+        path: 'categories',
+        name: 'ShopCategories',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Shop/CategoriesShop.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {

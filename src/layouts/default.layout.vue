@@ -415,11 +415,12 @@ export default {
           child: [
             {
               title: 'Категории',
-              icon: 'mdi-buffer',
+              icon: 'mdi-layers-triple',
               component: 'store-categories',
               actions: {
                 priceGenerate: true,
               },
+              to: { name: 'ShopCategories' },
             },
             {
               title: 'Группы',

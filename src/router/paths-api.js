@@ -30,4 +30,10 @@ export const DATA = {
       EDIT: buildPath('/menu-area-visibility/edit'),
     },
   },
+  SHOP: {
+    CATEGORIES: {
+      COPY: buildPath('/category/copy'),
+      DELETE: buildPath('/category/delete'),
+    },
+  },
 }

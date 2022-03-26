@@ -8,6 +8,7 @@ import '@/assets/scss/index.scss'
 import '@/assets/css/confirm.css'
 import '@/plugins/notifications'
 import '@/plugins/vee-validate'
+import '@/plugins/ckeditor'
 import config from '@/mixins/confirm'
 
 Vue.config.productionTip = false
