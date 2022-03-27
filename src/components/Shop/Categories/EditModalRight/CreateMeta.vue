@@ -6,17 +6,17 @@
         label="Meta Title"
         color="green"
         outlined
-        :error-messages="requiredErrors('metaTitle')"
+        :error-messages="[]"
       ></v-text-field>
 
       <v-textarea
-        v-model.trim="content[local].metaDesc"
+        v-model.trim="value.content[local].metaDesc"
         label="Meta Description"
         height="272px"
         no-resize
         color="green"
         outlined
-        :error-messages="requiredErrors('metaDesc')"
+        :error-messages="[]"
       ></v-textarea>
     </div>
   </div>
@@ -24,7 +24,17 @@
 
 <script>
 export default {
-  props: ['value', 'local', 'status', 'langs', 'valid', 'select', 'tabSelect'],
+  props: {
+    local: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Object,
+      required: true,
+    },
+  },
+  // props: ['value', 'local', 'status', 'langs', 'valid', 'select', 'tabSelect'],
   //   validations: function () {
   //     let value = {
   //         content: {},
@@ -60,16 +70,16 @@ export default {
         metaTitle: true,
         metaDesc: true,
       },
-      content: {
-        ru: {
-          metaTitle: '',
-          metaDesc: '',
-        },
-        ua: {
-          metaTitle: '',
-          metaDesc: '',
-        },
-      },
+      // content: {
+      //   ru: {
+      //     metaTitle: '',
+      //     metaDesc: '',
+      //   },
+      //   ua: {
+      //     metaTitle: '',
+      //     metaDesc: '',
+      //   },
+      // },
     }
   },
   mounted() {
@@ -82,52 +92,52 @@ export default {
     // }
   },
   watch: {
-    local(newLocal, oldLocal) {
-      for (let keyValue in this.value.content[oldLocal]) {
-        if (keyValue in this.input) {
-          if (
-            !this.content[newLocal][keyValue] &&
-            !this.value.content[newLocal][keyValue]
-          ) {
-            this.value.content[newLocal][keyValue] =
-              this.value.content[oldLocal][keyValue]
-          }
-        }
-      }
-    },
+    // local(newLocal, oldLocal) {
+    //   for (let keyValue in this.value.content[oldLocal]) {
+    //     if (keyValue in this.input) {
+    //       if (
+    //         !this.content[newLocal][keyValue] &&
+    //         !this.value.content[newLocal][keyValue]
+    //       ) {
+    //         this.value.content[newLocal][keyValue] =
+    //           this.value.content[oldLocal][keyValue]
+    //       }
+    //     }
+    //   }
+    // },
   },
   methods: {
-    addContent(key) {
-      this.content[this.local][key] = 1
-    },
+    // addContent(key) {
+    //   this.content[this.local][key] = 1
+    // },
     validate() {
-      this.$v.value.$touch()
+      // this.$v.value.$touch()
 
-      for (let i = 0; i < this.langs.length; i++) {
-        let local = this.langs[i].local
+      // for (let i = 0; i < this.langs.length; i++) {
+      //   let local = this.langs[i].local
 
-        if (this.value.status) {
-          if (
-            !this.$v.value.content[local].metaTitle.required ||
-            !this.$v.value.content[local].metaDesc.required
-          ) {
-            this.$emit('update:tabSelect', 1)
-            this.$emit('update:select', this.langs[i].id)
-            return false
-          }
-        }
-      }
+      //   if (this.value.status) {
+      //     if (
+      //       !this.$v.value.content[local].metaTitle.required ||
+      //       !this.$v.value.content[local].metaDesc.required
+      //     ) {
+      //       this.$emit('update:tabSelect', 1)
+      //       this.$emit('update:select', this.langs[i].id)
+      //       return false
+      //     }
+      //   }
+      // }
       return true
     },
-    requiredErrors() {
-      const errors = []
-      //   if (!this.$v.value.content[this.local][key].$dirty) return errors
-      //   if (this.$v.value.content[this.local][key].required !== undefined) {
-      //     !this.$v.value.content[this.local][key].required &&
-      //       errors.push('Это поле обязательно!')
-      //   }
-      return errors
-    },
+    // requiredErrors() {
+    //   const errors = []
+    //   if (!this.$v.value.content[this.local][key].$dirty) return errors
+    //   if (this.$v.value.content[this.local][key].required !== undefined) {
+    //     !this.$v.value.content[this.local][key].required &&
+    //       errors.push('Это поле обязательно!')
+    //   }
+    //   return errors
+    // },
   },
 }
 </script>

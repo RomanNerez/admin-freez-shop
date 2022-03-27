@@ -25,29 +25,9 @@
     </v-snackbar> -->
 
     <v-container fluid tag="section">
-      <list
-        :items="list"
-        :select.sync="selected"
-        :formState.sync="formDialog"
-        :edit="edit"
-        :edt.sync="edt"
-        :langs="getLangs"
-        :alert.sync="alert.option"
-        v-on:confirm="() => {}"
-      >
-      </list>
+      <List :alert.sync="alert.option" />
 
-      <editor
-        :formDialog.sync="formDialog"
-        :edit.sync="edit"
-        :selected.sync="selected"
-        :list="list"
-        :edt.sync="edt"
-        :related="related"
-        :available="available"
-        :components="components"
-      >
-      </editor>
+      <Editor v-if="getFormDialog" />
     </v-container>
   </v-col>
 </template>
@@ -58,21 +38,18 @@ import List from './Categories/List.vue'
 import Editor from './Categories/EditModalRight/Editor.vue'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-const { mapGetters: mapGettersCategories, mapActions: mapActionsCategories } =
-  createNamespacedHelpers('categories')
+const {
+  mapGetters: mapGettersStoreCategories,
+  mapActions: mapActionsStoreCategories,
+} = createNamespacedHelpers('store/categories')
 
 export default {
   components: {
-    list: List,
-    editor: Editor,
+    List,
+    Editor,
   },
   data: function () {
     return {
-      related: 'store',
-      items: [],
-      available: {
-        root: true,
-      },
       alert: {
         show: false,
         option: {
@@ -80,55 +57,11 @@ export default {
           text: null,
         },
       },
-      selected: null,
-      formDialog: false,
-      edit: {},
-      edt: false,
-      components: [
-        {
-          c: 'create-base',
-          t: 'осн. данные',
-        },
-        {
-          c: 'create-meta',
-          t: 'meta данные',
-        },
-      ],
     }
-  },
-  watch: {
-    selected(a) {
-      if (a) {
-        for (let i = 0; i < this.list.length; i++) {
-          let item = this.list[i]
-          if (item.id === a) {
-            this.edit = JSON.parse(JSON.stringify(item))
-            break
-          }
-        }
-        setTimeout(() => {
-          this.edt = false
-        }, 100)
-      } else {
-        this.edit = {}
-        setTimeout(() => {
-          this.edt = false
-        }, 100)
-      }
-    },
-    'alert.option': {
-      deep: true,
-      handler() {
-        this.alert.show = true
-      },
-    },
   },
   computed: {
     ...mapGettersLang(['getLangs']),
-    ...mapGettersCategories(['getCategories']),
-    list: function () {
-      return this.getCategories
-    },
+    ...mapGettersStoreCategories(['getCategories', 'getFormDialog']),
     alertColor: function () {
       switch (this.alert.option.type) {
         case 'loading':
@@ -142,7 +75,7 @@ export default {
     this.getCategoriesAction()
   },
   methods: {
-    ...mapActionsCategories({ getCategoriesAction: 'getCategories' }),
+    ...mapActionsStoreCategories({ getCategoriesAction: 'getCategories' }),
   },
 }
 </script>

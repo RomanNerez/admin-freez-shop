@@ -20,7 +20,7 @@
             <v-icon
               :disabled="Boolean(select)"
               v-on="on"
-              v-on:click="$emit('update:formState', true)"
+              v-on:click="updateFormDialog(true)"
             >
               mdi-plus
             </v-icon>
@@ -57,7 +57,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                v-on:click="$emit('update:formState', true)"
+                v-on:click="updateFormDialog(true)"
               >
                 mdi-pencil
               </v-icon>
@@ -214,17 +214,17 @@ import { createNamespacedHelpers } from 'vuex'
 // import axios from 'axios'
 
 const {
-  mapGetters: mapGettersCategories,
-  mapMutations: mapMutationsCategories,
-  mapActions: mapActionsCategories,
-} = createNamespacedHelpers('categories')
+  mapGetters: mapGettersStoreCategories,
+  mapMutations: mapMutationsStoreCategories,
+  mapActions: mapActionsStoreCategories,
+} = createNamespacedHelpers('store/categories')
 
 export default {
   props: [
     /*'select',*/ 'formState',
     /*'items',*/ 'edit',
-    'edt',
-    'langs',
+    /*'edt',*/
+    /*'langs',*/
     'alert',
   ],
   data: function () {
@@ -239,7 +239,7 @@ export default {
     },
   },
   computed: {
-    ...mapGettersCategories(['getCategories', 'getEditCategory']),
+    ...mapGettersStoreCategories(['getCategories', 'getEditCategory']),
     select() {
       return this.getEditCategory?.id
     },
@@ -251,8 +251,8 @@ export default {
     // },
   },
   methods: {
-    ...mapMutationsCategories(['updateEditCategory']),
-    ...mapActionsCategories(['copyCategory', 'deleteCategory']),
+    ...mapMutationsStoreCategories(['updateEditCategory', 'updateFormDialog']),
+    ...mapActionsStoreCategories(['copyCategory', 'deleteCategory']),
     // getString: function (str) {
     //   let stringArr = str.split(' ', 4)
     //   return stringArr.join(' ') + ' ...'

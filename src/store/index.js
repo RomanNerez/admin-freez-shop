@@ -6,7 +6,7 @@ import settings from './settings/settings'
 import loading from './loading'
 import confirmModel from './confirm-model'
 import notification from './notification'
-import categories from './categories'
+import store from './store/store'
 import collections from './collections'
 import pages from './pages'
 
@@ -17,10 +17,10 @@ export default new Vuex.Store({
     auth,
     lang,
     settings,
+    store,
     loading,
     confirmModel,
     notification,
-    categories,
     collections,
     pages,
   },
