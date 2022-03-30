@@ -12,7 +12,7 @@ export const DATA = {
     CURRENCY_DELETE: buildPath('/currency/delete'),
     CURRENCY_UPDATE: buildPath('/currency/update'),
     MENU_GET: buildPath('/menu'),
-    CATEGORIES_GET: buildPath('/category'),
+    CATEGORIES_GET: buildPath('/store/category'),
     COLLECTIONS_GET: buildPath('/collection'),
     PAGES_GET: buildPath('/page'),
     MENU: {
@@ -28,6 +28,14 @@ export const DATA = {
       ADD: buildPath('/menu-area-visibility/add'),
       DELETE: buildPath('/menu-area-visibility/delete'),
       EDIT: buildPath('/menu-area-visibility/edit'),
+    },
+  },
+  STORE: {
+    CATEGORIES: {
+      COPY: buildPath('/store/category/copy'),
+      DELETE: buildPath('/store/category/delete'),
+      CREATE: buildPath('/store/category/create'),
+      EDIT: buildPath('/store/category/edit'),
     },
   },
 }

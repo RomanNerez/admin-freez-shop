@@ -129,3 +129,46 @@ export async function deleteCurrency(id) {
     return errorBuild(e)
   }
 }
+
+export async function copyCategory(id) {
+  try {
+    const { data } = await initAxios().post(DATA.STORE.CATEGORIES.COPY, {
+      id,
+    })
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function deleteCategory(id) {
+  try {
+    await initAxios().post(DATA.STORE.CATEGORIES.DELETE, {
+      id,
+    })
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function createCategory(dataCategory) {
+  try {
+    const { data } = await initAxios().post(DATA.STORE.CATEGORIES.CREATE, {
+      data: dataCategory,
+    })
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
+export async function editCategory(dataCategory) {
+  try {
+    const { data } = await initAxios().post(DATA.STORE.CATEGORIES.EDIT, {
+      data: dataCategory,
+    })
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
