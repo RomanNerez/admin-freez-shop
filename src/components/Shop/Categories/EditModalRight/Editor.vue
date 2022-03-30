@@ -181,62 +181,6 @@ export default {
         : this.createCategory
 
       callback(this.input)
-      // if (!this.validate()) {
-      //   return
-      // }
-      // var s = this.selected,
-      //   input = this.editor,
-      //   url = s ? '/home/category/edit' : '/home/category/create'
-      // input.related = this.related
-      // this.pending = true
-      // axios
-      //   .post(url, {
-      //     _token: window._token,
-      //     data: input,
-      //   })
-      //   .then((response) => {
-      //     setTimeout(() => {
-      //       var data = response.data
-      //       if (data.category) {
-      //         this.$store.commit('addCategories', data.category)
-      //       } else {
-      //         for (var i = 0; i < this.list.length; i++) {
-      //           var item = this.list[i]
-      //           if (item.id === input.id) {
-      //             input.updated_at = data.updated_at
-      //             this.$store.commit('editCategories', {
-      //               index: i,
-      //               input: input,
-      //             })
-      //           }
-      //         }
-      //       }
-      //       this.editor = {
-      //         file: '',
-      //         slug: '',
-      //         is_root: false,
-      //         status: 0,
-      //       }
-      //       this.setup()
-      //       this.$emit('update:selected', null)
-      //       this.$emit('update:formDialog', false)
-      //       //this.$v.reset();
-      //     }, 200)
-      //   })
-      //   .catch((error) => {
-      //     this.snackbar.show = true
-      //     if (error.response && error.response.data.message) {
-      //       this.snackbar.text = error.response.data.message
-      //     } else {
-      //       this.snackbar.text = 'Неизвестная ошибка, повторите попытку'
-      //     }
-      //   })
-      //   .finally(() => {
-      //     this.pending = false
-      //     setTimeout(() => {
-      //       this.$emit('update:edt', false)
-      //     }, 300)
-      //   })
     },
   },
 }

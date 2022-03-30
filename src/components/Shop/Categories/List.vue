@@ -211,7 +211,6 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-// import axios from 'axios'
 
 const {
   mapGetters: mapGettersStoreCategories,
@@ -220,16 +219,9 @@ const {
 } = createNamespacedHelpers('store/categories')
 
 export default {
-  props: [
-    /*'select',*/ 'formState',
-    /*'items',*/ 'edit',
-    /*'edt',*/
-    /*'langs',*/
-    'alert',
-  ],
+  props: ['alert'],
   data: function () {
     return {
-      // location: window.location.origin,
       local: process.env.VUE_APP_I18N_LOCALE,
     }
   },
@@ -243,113 +235,10 @@ export default {
     select() {
       return this.getEditCategory?.id
     },
-    // getLocal: function () {
-    //   return 'ru'
-    // },
-    // list() {
-    //   return [] // this.items
-    // },
   },
   methods: {
     ...mapMutationsStoreCategories(['updateEditCategory', 'updateFormDialog']),
     ...mapActionsStoreCategories(['copyCategory', 'deleteCategory']),
-    // getString: function (str) {
-    //   let stringArr = str.split(' ', 4)
-    //   return stringArr.join(' ') + ' ...'
-    // },
-    // selectedId: function (e, item) {
-    //   if (this.edt) {
-    //     this.$emit('confirm', e, {
-    //       type: 'set_editor',
-    //       input: item,
-    //       action: this.emitId,
-    //     })
-    //   } else {
-    //     this.$emit('update:select', item)
-    //   }
-    // },
-    // emitId: function (item) {
-    //   this.$emit('update:select', item)
-    // },
-    // copyItem: function () {
-    //   this.$emit('update:alert', {
-    //     type: 'loading',
-    //     text: 'Копирование категории...',
-    //   })
-
-    //   axios
-    //     .post(window.location.pathname + '/category/copy', {
-    //       _token: window._token,
-    //       id: this.select,
-    //     })
-    //     .then((response) => {
-    //       this.$store.commit('addCategories', response.data)
-
-    //       this.$emit('update:select', null)
-    //       this.$emit('update:alert', {
-    //         type: 'success',
-    //         text: 'Категория успешно скопирована',
-    //       })
-    //     })
-    //     .catch((error) => {
-    //       let data = error.response.data,
-    //         text = 'Неизвестная ошибка, повторите попытку'
-
-    //       if (data.errors) {
-    //         text = Object.values(data.errors)[0][0]
-    //       } else if (data.message) {
-    //         text = data.message
-    //       }
-
-    //       this.$emit('update:alert', {
-    //         type: 'error',
-    //         text: text,
-    //       })
-    //     })
-    // },
-    // deleteCategory: function () {
-    //   let data = new FormData()
-
-    //   data.append('_token', window._token)
-    //   data.append('id', this.select)
-
-    //   this.$emit('update:alert', {
-    //     type: 'loading',
-    //     text: 'Удаление категории...',
-    //   })
-
-    //   axios
-    //     .post('/home/category/delete', data)
-    //     .then((response) => {
-    //       for (let i = 0; i < this.getCategories.length; i++) {
-    //         let item = this.getCategories[i]
-
-    //         if (this.select === item.id) {
-    //           this.$emit('update:select', null)
-    //           this.$store.commit('rmCategories', {
-    //             index: i,
-    //             related: item.related,
-    //           })
-
-    //           break
-    //         }
-    //       }
-
-    //       if (response.data && response.data.menus) {
-    //         this.$store.commit('Menu/updateMenus', response.data.menus)
-    //       }
-    //       this.$emit('update:alert', {
-    //         type: 'success',
-    //         text: 'Категория успешно удалена',
-    //       })
-    //     })
-    //     .catch(() => {
-    //       this.$emit('update:alert', {
-    //         type: 'error',
-    //         text: 'Неизвестная ошибка, повторите попытку',
-    //       })
-    //     })
-    // },
   },
 }
 </script>

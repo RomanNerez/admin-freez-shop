@@ -22,13 +22,15 @@
 
           <v-row no-gutters>
             <v-col cols="10">
-              <v-text-field
-                v-model="value.slug"
-                label="Ccылка"
-                color="green"
-                outlined
-                :error-messages="[]"
-              ></v-text-field>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <v-text-field
+                  v-model="value.slug"
+                  label="Ccылка"
+                  color="green"
+                  outlined
+                  :error-messages="errors"
+                ></v-text-field>
+              </ValidationProvider>
             </v-col>
             <v-col cols="2" class="text-right">
               <v-tooltip top>
@@ -70,15 +72,11 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import { ValidationProvider, extend } from 'vee-validate'
+import { ValidationProvider } from 'vee-validate'
 import IconImage from '@/components/IconImage.vue'
 import { translit } from '@/services/translit'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
-
-extend('max', {
-  message: 'Поле "{_field_}" может содержать максимум {length} знаков',
-})
 
 export default {
   components: { IconImage, ValidationProvider },
@@ -109,81 +107,10 @@ export default {
       },
     }
   },
-  watch: {
-    // local(newLocal, oldLocal) {
-    //   for (let keyValue in this.value.content[oldLocal]) {
-    //     if (!this.value.content[newLocal][keyValue]) {
-    //       this.value.content[newLocal][keyValue] =
-    //         this.value.content[oldLocal][keyValue]
-    //     }
-    //   }
-    // },
-  },
   computed: {
     ...mapGettersLang(['getLangs']),
-    slugErrors() {
-      const errors = []
-      //   this.$v.value.slug.regexp &&
-      //     errors.push(
-      //       'Допускаются только цифры, буквы латинского алфавита и тире'
-      //     )
-      //   if (!this.$v.value.slug.$dirty) return errors
-      //   if (this.$v.value.slug.required !== undefined) {
-      //     !this.$v.value.slug.required && errors.push('Это поле обязательно!')
-      //   }
-
-      return errors
-    },
-    templateErrors() {
-      const errors = []
-
-      //   if (this.$v.value.template && !this.$v.value.template.required) {
-      //     errors.push('Это поле обязательно!')
-      //   }
-
-      return errors
-    },
   },
   methods: {
-    validate() {
-      this.$v.value.$touch()
-
-      // for (let i = 0; i < this.langs.length; i++) {
-      //   let local = this.langs[i].local
-
-      //   if (this.value.status) {
-      //     if (
-      //       !this.$v.value.content[local].title.required ||
-      //       !this.$v.value.content[local].desc.required ||
-      //       !this.$v.value.slug.required ||
-      //       this.$v.value.slug.regexp
-      //     ) {
-      //       this.$emit('update:tabSelect', 0)
-      //       this.$emit('update:select', this.langs[i].id)
-      //       return false
-      //     }
-
-      //     if (
-      //       !this.$v.value.file.required ||
-      //       (this.$v.value.template && !this.$v.value.template.required)
-      //     ) {
-      //       this.$emit('update:tabSelect', 0)
-      //       return false
-      //     }
-      //   } else if (
-      //     !this.$v.value.content.ru.title.required ||
-      //     !this.$v.value.slug.required ||
-      //     this.$v.value.slug.regexp
-      //   ) {
-      //     this.$emit('update:tabSelect', 0)
-      //     return false
-      //   }
-      // }
-      return true
-    },
-    // handleInput() {
-    //   this.$emit('input', this.content)
-    // },
     generate_url() {
       var url = this.value.content[
         process.env.VUE_APP_I18N_LOCALE
@@ -191,15 +118,6 @@ export default {
       url = translit(url)
       this.value.slug = url.replace(/[^0-9a-z_\\-]+/gi, '').toLowerCase()
       return url
-    },
-    requiredErrors() {
-      const errors = []
-      //   if (!this.$v.value.content[this.local][key].$dirty) return errors
-      //   if (this.$v.value.content[this.local][key].required !== undefined) {
-      //     !this.$v.value.content[this.local][key].required &&
-      //       errors.push('Это поле обязательно!')
-      //   }
-      return errors
     },
   },
 }
