@@ -420,7 +420,7 @@ export default {
               actions: {
                 priceGenerate: true,
               },
-              to: { name: 'ShopCategories' },
+              to: { name: 'StoreCategories' },
             },
             {
               title: 'Группы',
@@ -430,6 +430,7 @@ export default {
                 key: 'categories',
                 items: this.getCategories,
               },
+              to: { name: 'StoreGroups' },
             },
             {
               title: 'Коллекции',

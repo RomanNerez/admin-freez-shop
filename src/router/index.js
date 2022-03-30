@@ -57,22 +57,31 @@ const routes = [
     ],
   },
   {
-    path: '/shop',
-    name: 'Shop',
+    path: '/store',
+    name: 'store',
     meta: {
       layout: DEFAULT_LAYOUT,
       requiresLogin: true,
     },
-    component: () => import('@/views/shop/Index.vue'),
+    component: () => import('@/views/store/Index.vue'),
     children: [
       {
         path: 'categories',
-        name: 'ShopCategories',
+        name: 'StoreCategories',
         meta: {
           layout: DEFAULT_LAYOUT,
           requiresLogin: true,
         },
-        component: () => import('@/components/Shop/CategoriesShop.vue'),
+        component: () => import('@/components/Store/CategoriesStore.vue'),
+      },
+      {
+        path: 'groups',
+        name: 'StoreGroups',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Store/GroupsStore.vue'),
       },
     ],
   },

@@ -37,5 +37,8 @@ export const DATA = {
       CREATE: buildPath('/store/category/create'),
       EDIT: buildPath('/store/category/edit'),
     },
+    GROUPS: {
+      GET: buildPath('/store/groups'),
+    },
   },
 }
