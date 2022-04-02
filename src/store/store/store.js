@@ -1,7 +1,8 @@
 import categories from './categories'
 import groups from './groups'
+import collections from './collections'
 
 export default {
   namespaced: true,
-  modules: { categories, groups },
+  modules: { categories, groups, collections },
 }
