@@ -84,6 +84,15 @@ export async function getCollections() {
   }
 }
 
+export async function getAttributes() {
+  try {
+    const { data } = await initAxios().get(DATA.STORE.ATTRIBUTES.GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
 export async function getPages() {
   try {
     const { data } = await initAxios().get(DATA.SETTINGS.PAGES_GET)

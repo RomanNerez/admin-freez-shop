@@ -446,6 +446,7 @@ export default {
               title: 'Атрибуты',
               icon: 'mdi-tag-multiple-outline',
               component: 'store-attributes',
+              to: { name: 'StoreAttributes' },
             },
             {
               title: 'Товары',
@@ -463,85 +464,85 @@ export default {
             },
           ],
         },
-        {
-          title: 'Услуги',
-          icon: 'mdi-format-list-bulleted',
-          child: [
-            {
-              title: 'Категории',
-              icon: 'mdi-buffer',
-              component: 'services-categories',
-            },
-            {
-              title: 'Группы',
-              icon: 'mdi-animation',
-              component: 'services-groups',
-              filter: {
-                key: 'categories',
-                items:
-                  this.$store?.getters?.servicesData?.available?.categories ||
-                  [],
-              },
-            },
-            {
-              title: 'Атрибуты',
-              icon: 'mdi-tag-multiple-outline',
-              component: 'services-attributes',
-            },
-            {
-              title: 'Товары',
-              icon: 'mdi-unity',
-              component: 'services-products',
-              actions: {
-                priceEdit: true,
-              },
-              filter: {
-                key: 'categories',
-                items:
-                  this.$store?.getters?.servicesData?.available?.categories ||
-                  [],
-              },
-            },
-          ],
-        },
-        {
-          title: 'Контент',
-          icon: 'mdi-format-list-bulleted',
-          child: [
-            {
-              title: 'Категории',
-              icon: 'mdi-buffer',
-              component: 'content-categories',
-            },
-            {
-              title: 'Рубрики',
-              icon: 'mdi-animation',
-              component: 'content-groups',
-              filter: {
-                key: 'categories',
-                items:
-                  this.$store?.getters?.contentData?.available?.categories ||
-                  [],
-              },
-            },
-            {
-              title: 'Записи',
-              icon: 'mdi-content-paste',
-              component: 'content-articles',
-              filter: {
-                key: 'categories',
-                items:
-                  this.$store?.getters?.contentData?.available?.categories ||
-                  [],
-              },
-            },
-            {
-              title: 'Страницы',
-              icon: 'mdi-format-page-break',
-              component: 'content-pages',
-            },
-          ],
-        },
+        // {
+        //   title: 'Услуги',
+        //   icon: 'mdi-format-list-bulleted',
+        //   child: [
+        //     {
+        //       title: 'Категории',
+        //       icon: 'mdi-buffer',
+        //       component: 'services-categories',
+        //     },
+        //     {
+        //       title: 'Группы',
+        //       icon: 'mdi-animation',
+        //       component: 'services-groups',
+        //       filter: {
+        //         key: 'categories',
+        //         items:
+        //           this.$store?.getters?.servicesData?.available?.categories ||
+        //           [],
+        //       },
+        //     },
+        //     {
+        //       title: 'Атрибуты',
+        //       icon: 'mdi-tag-multiple-outline',
+        //       component: 'services-attributes',
+        //     },
+        //     {
+        //       title: 'Товары',
+        //       icon: 'mdi-unity',
+        //       component: 'services-products',
+        //       actions: {
+        //         priceEdit: true,
+        //       },
+        //       filter: {
+        //         key: 'categories',
+        //         items:
+        //           this.$store?.getters?.servicesData?.available?.categories ||
+        //           [],
+        //       },
+        //     },
+        //   ],
+        // },
+        // {
+        //   title: 'Контент',
+        //   icon: 'mdi-format-list-bulleted',
+        //   child: [
+        //     {
+        //       title: 'Категории',
+        //       icon: 'mdi-buffer',
+        //       component: 'content-categories',
+        //     },
+        //     {
+        //       title: 'Рубрики',
+        //       icon: 'mdi-animation',
+        //       component: 'content-groups',
+        //       filter: {
+        //         key: 'categories',
+        //         items:
+        //           this.$store?.getters?.contentData?.available?.categories ||
+        //           [],
+        //       },
+        //     },
+        //     {
+        //       title: 'Записи',
+        //       icon: 'mdi-content-paste',
+        //       component: 'content-articles',
+        //       filter: {
+        //         key: 'categories',
+        //         items:
+        //           this.$store?.getters?.contentData?.available?.categories ||
+        //           [],
+        //       },
+        //     },
+        //     {
+        //       title: 'Страницы',
+        //       icon: 'mdi-format-page-break',
+        //       component: 'content-pages',
+        //     },
+        //   ],
+        // },
         {
           title: 'CRM',
           icon: 'mdi-cart-outline',

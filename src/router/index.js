@@ -92,6 +92,15 @@ const routes = [
         },
         component: () => import('@/components/Store/CollectionsStore.vue'),
       },
+      {
+        path: 'attributes',
+        name: 'StoreAttributes',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Store/AttributesStore.vue'),
+      },
     ],
   },
   {

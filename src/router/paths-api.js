@@ -40,5 +40,8 @@ export const DATA = {
     GROUPS: {
       GET: buildPath('/store/groups'),
     },
+    ATTRIBUTES: {
+      GET: buildPath('/store/attribute'),
+    },
   },
 }
