@@ -461,6 +461,7 @@ export default {
                   return !item.is_root
                 }),
               },
+              to: { name: 'StoreProducts' },
             },
           ],
         },

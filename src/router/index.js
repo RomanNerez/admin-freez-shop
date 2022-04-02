@@ -101,6 +101,15 @@ const routes = [
         },
         component: () => import('@/components/Store/AttributesStore.vue'),
       },
+      {
+        path: 'products',
+        name: 'StoreProducts',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/Store/ProductsStore.vue'),
+      },
     ],
   },
   {
