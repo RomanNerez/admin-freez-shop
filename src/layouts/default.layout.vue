@@ -440,6 +440,7 @@ export default {
                 key: 'categories',
                 items: this.getCategories,
               },
+              to: { name: 'StoreCollections' },
             },
             {
               title: 'Атрибуты',
