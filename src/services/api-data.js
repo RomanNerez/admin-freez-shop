@@ -66,6 +66,15 @@ export async function getCategories() {
   }
 }
 
+export async function getGroups() {
+  try {
+    const { data } = await initAxios().get(DATA.STORE.GROUPS.GET)
+    return data
+  } catch (e) {
+    return errorBuild(e)
+  }
+}
+
 export async function getCollections() {
   try {
     const { data } = await initAxios().get(DATA.SETTINGS.COLLECTIONS_GET)
