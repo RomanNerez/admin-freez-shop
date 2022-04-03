@@ -68,5 +68,9 @@ export const DATA = {
       GENERATE_EN: buildPath('/crm/orders/generate-en'),
       DELETE_TTN: buildPath('/crm/orders/delete-ttn'),
     },
+    USERS: {
+      LIST: buildPath('/crm/users/list'),
+      EDIT: buildPath('/crm/users/edit'),
+    },
   },
 }
