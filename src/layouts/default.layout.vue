@@ -557,6 +557,7 @@ export default {
               title: 'Услуги',
               icon: 'mdi-unity',
               component: 'crm-services',
+              to: { name: 'CRMService' },
             },
             {
               title: 'Пользователи',
