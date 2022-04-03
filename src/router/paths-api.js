@@ -43,5 +43,17 @@ export const DATA = {
     ATTRIBUTES: {
       GET: buildPath('/store/attribute'),
     },
+    PRODUCTS: {
+      LIST: buildPath('/store/products/list'),
+      EXPORT: buildPath('/store/products/export'),
+      SEARCH: buildPath('/store/products/search'),
+      DELETE: buildPath('/store/products/delete'),
+      CREATE: buildPath('/store/products/create'),
+      EDIT: buildPath('/store/products/edit'),
+      COPY: buildPath('/store/products/copy'),
+      ORDER: buildPath('/store/products/order'),
+      RELATED: buildPath('/store/products/related'),
+      UPDATE_PRICE: buildPath('/store/products/update-price'),
+    },
   },
 }
