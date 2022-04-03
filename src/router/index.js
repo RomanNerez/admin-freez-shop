@@ -130,6 +130,15 @@ const routes = [
         },
         component: () => import('@/components/CRM/ServiceCRM.vue'),
       },
+      {
+        path: 'orders',
+        name: 'CRMOrders',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/CRM/OrdersCRM.vue'),
+      },
     ],
   },
   {

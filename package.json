@@ -10,6 +10,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+    "@trevoreyre/autocomplete-vue": "^2.2.0",
     "axios": "^0.24.0",
     "ckeditor4-vue": "^1.5.1",
     "core-js": "^3.6.5",

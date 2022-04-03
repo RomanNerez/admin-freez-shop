@@ -552,6 +552,7 @@ export default {
               title: 'Заказы',
               icon: 'mdi-cart-outline',
               component: 'crm-orders',
+              to: { name: 'CRMOrders' },
             },
             {
               title: 'Услуги',
