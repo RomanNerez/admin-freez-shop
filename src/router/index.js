@@ -71,6 +71,7 @@ const routes = [
         meta: {
           layout: DEFAULT_LAYOUT,
           requiresLogin: true,
+          components: ['PriceListButton'],
         },
         component: () => import('@/components/Store/CategoriesStore.vue'),
       },
@@ -80,6 +81,7 @@ const routes = [
         meta: {
           layout: DEFAULT_LAYOUT,
           requiresLogin: true,
+          components: ['SelectCategories'],
         },
         component: () => import('@/components/Store/GroupsStore.vue'),
       },
@@ -89,6 +91,7 @@ const routes = [
         meta: {
           layout: DEFAULT_LAYOUT,
           requiresLogin: true,
+          components: ['SelectCategories'],
         },
         component: () => import('@/components/Store/CollectionsStore.vue'),
       },
@@ -107,6 +110,7 @@ const routes = [
         meta: {
           layout: DEFAULT_LAYOUT,
           requiresLogin: true,
+          components: ['SelectCategories', 'PriceEditModal'],
         },
         component: () => import('@/components/Store/ProductsStore.vue'),
       },

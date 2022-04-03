@@ -24,4 +24,31 @@ export default new Vuex.Store({
     collections,
     pages,
   },
+  state: () => ({
+    drawer: null,
+    title: '',
+    selectCategories: null,
+  }),
+  getters: {
+    getDrawer(state) {
+      return state.drawer
+    },
+    getTitle(state) {
+      return state.title
+    },
+    getSelectCategories(state) {
+      return state.selectCategories
+    },
+  },
+  mutations: {
+    updateDrawer(state, payload) {
+      state.drawer = payload
+    },
+    updateTitle(state, payload) {
+      state.title = payload
+    },
+    updateSelectCategories(state, payload) {
+      state.selectCategories = payload
+    },
+  },
 })

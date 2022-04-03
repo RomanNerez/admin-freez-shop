@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
+import { createNamespacedHelpers, mapGetters } from 'vuex'
 import List from './Collections/List.vue'
 import Editor from './Collections/EditModalRight/Editor.vue'
 
@@ -133,8 +133,14 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['getSelectCategories']),
     ...mapGettersLang(['getLangs']),
-    ...mapGettersStoreCollections({ list: 'getCollections' }),
+    ...mapGettersStoreCollections({ getCollectionsGetters: 'getCollections' }),
+    list() {
+      return this.getCollectionsGetters.filter(
+        (collection) => collection.categories_id === this.getSelectCategories
+      )
+    },
     alertColor: function () {
       switch (this.alert.option.type) {
         case 'loading':
