@@ -564,6 +564,7 @@ export default {
               title: 'Пользователи',
               icon: 'mdi-account-edit-outline',
               component: 'crm-users',
+              to: { name: 'CRMUsers' },
             },
           ],
         },
