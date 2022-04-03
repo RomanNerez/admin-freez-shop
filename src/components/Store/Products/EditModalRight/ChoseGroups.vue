@@ -42,6 +42,13 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapGetters: mapGettersStoreCategories } =
+  createNamespacedHelpers('store/categories')
+const { mapGetters: mapGettersStoreGroups } =
+  createNamespacedHelpers('store/groups')
+
 export default {
   props: [
     'value',
@@ -63,21 +70,23 @@ export default {
     }
   },
   computed: {
+    ...mapGettersStoreCategories(['getCategories']),
+    ...mapGettersStoreGroups(['getGroups']),
     rootCatalog: function () {
-      return this.$store.getters.storeData.root_catalog
+      return this.getCategories.find((category) => category.is_root)
     },
     groups: function () {
-      let groups
+      // let groups
 
-      switch (this.related) {
-        case 'store':
-          groups = this.$store.getters.storeData.data.groups
-          break
-        case 'services':
-          groups = this.$store.getters.servicesData.data.groups
-          break
-      }
-      return groups.filter((item) => {
+      // switch (this.related) {
+      //   case 'store':
+      //     groups = this.$store.getters.storeData.data.groups
+      //     break
+      //   case 'services':
+      //     groups = this.$store.getters.servicesData.data.groups
+      //     break
+      // }
+      return this.getGroups.filter((item) => {
         return (
           item.status &&
           item.subs.length &&

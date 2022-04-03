@@ -199,6 +199,7 @@
 
 <script>
 import axios from 'axios'
+import { DATA } from '@/router/paths-api'
 export default {
   props: [
     'select',
@@ -316,7 +317,7 @@ export default {
       window._debounce = setTimeout(() => {
         if ((item.order !== null) & (item.order !== '')) {
           axios
-            .post(window.location.pathname + '/products/order', {
+            .post(DATA.STORE.PRODUCTS.ORDER, {
               id: item.id,
               order: item.order,
             })
@@ -356,7 +357,7 @@ export default {
       })
 
       axios
-        .post(window.location.pathname + '/products/copy', {
+        .post(DATA.STORE.PRODUCTS.COPY, {
           _token: window._token,
           id: this.select,
         })
@@ -392,7 +393,7 @@ export default {
       })
 
       axios
-        .post('/home/products/delete', {
+        .post(DATA.STORE.PRODUCTS.DELETE, {
           _token: window._token,
           id: this.select,
         })

@@ -234,8 +234,12 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
 import { required } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider } from 'vee-validate'
+
+const { mapGetters: mapGettersCurrency } =
+  createNamespacedHelpers('settings/currency')
 
 extend('required', {
   ...required,
@@ -260,7 +264,7 @@ export default {
   },
   data: function () {
     return {
-      currencies: this.$store.getters.currencyData.list,
+      //currencies: this.$store.getters.currencyData.list,
       options: {
         animation: 200,
         disabled: false,
@@ -278,6 +282,7 @@ export default {
     },
   },
   computed: {
+    ...mapGettersCurrency({ currencies: 'getList' }),
     variables: function () {
       return this.other
     },

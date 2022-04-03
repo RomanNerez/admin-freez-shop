@@ -174,8 +174,12 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 export default {
   name: 'ParamsItem',
+  components: {
+    draggable,
+  },
   props: [
     'value',
     'local',

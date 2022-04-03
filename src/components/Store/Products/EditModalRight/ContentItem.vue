@@ -83,14 +83,14 @@
         <v-col class="pt-0">
           <template v-if="attribute >= 0">
             <ckeditor
-              editor-url="plugins/ckeditor/ckeditor.js"
+              :editor-url="editorUrl"
               v-model="value.content[local].desc.attrs[attribute].value"
               :config="editorConfig"
             ></ckeditor>
           </template>
           <template v-else>
             <ckeditor
-              editor-url="plugins/ckeditor/ckeditor.js"
+              :editor-url="editorUrl"
               v-model="value.content[local].desc.base"
               :config="editorConfig"
             ></ckeditor>
@@ -139,6 +139,7 @@ export default {
   data: function () {
     return {
       attribute: -1,
+      editorUrl: process.env.VUE_APP_CKEDITOR_URL,
       editorConfig: {
         extraPlugins: 'justify',
         filebrowserImageBrowseUrl: '/laravel-filemanager?type=image',

@@ -198,8 +198,12 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 export default {
   name: 'SetMedia',
+  components: {
+    draggable,
+  },
   props: [
     'value',
     'local',

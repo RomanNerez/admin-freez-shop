@@ -24,7 +24,7 @@
       </template>
     </v-snackbar>
 
-    <v-container fluid tag="section" v-if="20">
+    <v-container fluid tag="section" v-if="1">
       <list
         :items="list"
         :select.sync="selected"
@@ -36,7 +36,7 @@
         :alert.sync="alert.option"
         :total="total"
         :loading="loading"
-        v-on:confirm="$root.confirmAction"
+        v-on:confirm="() => {}"
         ref="listTable"
       />
 
@@ -44,7 +44,7 @@
         :formDialog.sync="formDialog"
         :edit.sync="edit"
         :selected.sync="selected"
-        :parent="20"
+        :parent="1"
         :edt.sync="edt"
         :related="related"
         :available="available"
@@ -59,6 +59,7 @@ import { createNamespacedHelpers } from 'vuex'
 import axios from 'axios'
 import List from './Products/List.vue'
 import Editor from './Products/EditModalRight/Editor.vue'
+import { DATA } from '@/router/paths-api'
 
 const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
 
@@ -72,7 +73,7 @@ export default {
     return {
       related: 'store',
       actions: {
-        list: window.location.origin + '/home/products/list',
+        list: DATA.STORE.PRODUCTS.LIST,
       },
       items: [],
       available: {
@@ -211,7 +212,7 @@ export default {
       axios
         .get(this.actions.list, {
           params: {
-            category: 20,
+            category: 1,
             by: sortBy[0],
             sort: sort,
             page: page,

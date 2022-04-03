@@ -12,16 +12,13 @@
       >
         <v-form>
           <v-card-title class="px-0 pt-0">
-            <!--<span class="headline">
-                            {{ !selected ? 'Новая категория' : 'Редактирование' }}
-                        </span>-->
             <v-select
               style="margin-right: 5% !important"
               :disabled="activeItem.o && activeItem.o.disabled.lang"
               class="b-lang"
-              v-model="langs.select"
-              :items="langs.items"
-              item-value="id"
+              v-model="lang"
+              :items="getLangs"
+              item-value="local"
               item-text="title"
               label="Язык"
               color="green"
@@ -145,9 +142,9 @@
               v-model="editor"
               :local="getLocal"
               :status="editor.status"
-              :langs="langs.items"
+              :langs="lang"
               :ref="component.c"
-              :select.sync="langs.select"
+              :select.sync="lang"
               :other="getOtherProps(component.c)"
               :index="index"
               :related="related"
@@ -176,6 +173,7 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
 import axios from 'axios'
 import html_hidden from '@/helpers/html_hidden'
 import ChoseAttr from './ChoseAttr.vue'
@@ -186,6 +184,11 @@ import ContentItem from './ContentItem.vue'
 import ParamsItem from './ParamsItem.vue'
 import OptionItem from './OptionItem.vue'
 import MetaItem from './MetaItem.vue'
+import { DATA } from '@/router/paths-api'
+
+const { mapGetters: mapGettersLang } = createNamespacedHelpers('lang')
+const { mapGetters: mapGettersStoreAttributes } =
+  createNamespacedHelpers('store/attributes')
 
 export default {
   props: [
@@ -215,10 +218,7 @@ export default {
       pending: false,
       is_edit: false,
       editor: {},
-      langs: {
-        items: this.$store.state.data.langs,
-        select: null,
-      },
+      lang: 'ru',
       buffer: {
         content: {},
       },
@@ -269,7 +269,7 @@ export default {
           this.editor = this.edit
 
           if (this.editor.status) {
-            this.langs.items.forEach((item) => {
+            this.getLangs.forEach((item) => {
               item.valid = true
             })
           }
@@ -298,8 +298,10 @@ export default {
     },
   },
   computed: {
+    ...mapGettersLang(['getLangs']),
+    ...mapGettersStoreAttributes(['getAttributes']),
     getLang: function () {
-      return this.langs.items.find((item) => item.id === this.langs.select)
+      return this.getLangs.find((item) => item.local === this.lang)
     },
     getLocal: function () {
       return this.getLang.local
@@ -310,7 +312,7 @@ export default {
     attributes() {
       switch (this.related) {
         case 'store':
-          return this.$store.getters.storeData.data.attributes
+          return this.getAttributes
         default:
           return this.$store.getters.servicesData.data.attributes
       }
@@ -355,8 +357,8 @@ export default {
       }
     },
     otherLang: function () {
-      return this.langs.items.filter((item) => {
-        return item.id !== this.langs.select
+      return this.getLangs.filter((item) => {
+        return item.local !== this.lang
       })
     },
     checkImportContent: function () {
@@ -397,7 +399,7 @@ export default {
               keys = _key.length > 1 ? _key[1].split(',') : null
 
             if (keys) {
-              this.langs.items.forEach((lang) => {
+              this.getLangs.forEach((lang) => {
                 keys.forEach((key) => {
                   let setValue = JSON.parse(JSON.stringify(value))
                   target[lang.local][key].attrs = this.getOldAttr(
@@ -454,11 +456,11 @@ export default {
       })
     },
     setup: function () {
-      this.langs.items.forEach((item) => {
+      this.getLangs.forEach((item) => {
         item.valid = false
         this.$set(this.buffer.content, item.local, null)
       })
-      this.langs.select = this.langs.items[0].id
+      this.lang = this.getLangs[0].local
 
       this.editor = {
         slug: '',
@@ -491,7 +493,7 @@ export default {
           base: [],
           attrs: [],
         },
-        content: this.langs.items.reduce(function (acc, item) {
+        content: this.getLangs.reduce(function (acc, item) {
           acc[item.local] = {
             title: '',
             desc: {
@@ -566,10 +568,10 @@ export default {
         }
         if (this.editor.status) {
           this.getLang.valid = true
-          const checkLang = this.langs.items.find((item) => !item.valid)
+          const checkLang = this.getLangs.find((item) => !item.valid)
 
           if (checkLang) {
-            this.langs.select = checkLang.id
+            this.lang = checkLang.local
             return false
           }
         }
@@ -581,10 +583,9 @@ export default {
       this.validate().then((result) => {
         if (result) {
           let input = this.editor,
-            path = window.location.pathname + '/',
             url = this.selected
-              ? path + 'products/edit'
-              : path + 'products/create'
+              ? DATA.STORE.PRODUCTS.EDIT
+              : DATA.STORE.PRODUCTS.CREATE
 
           input.related_to = this.related
 
