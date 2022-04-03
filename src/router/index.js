@@ -113,6 +113,26 @@ const routes = [
     ],
   },
   {
+    path: '/crm',
+    name: 'crm',
+    meta: {
+      layout: DEFAULT_LAYOUT,
+      requiresLogin: true,
+    },
+    component: () => import('@/views/crm/Index.vue'),
+    children: [
+      {
+        path: 'service',
+        name: 'CRMService',
+        meta: {
+          layout: DEFAULT_LAYOUT,
+          requiresLogin: true,
+        },
+        component: () => import('@/components/CRM/ServiceCRM.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {

@@ -56,4 +56,10 @@ export const DATA = {
       UPDATE_PRICE: buildPath('/store/products/update-price'),
     },
   },
+  CRM: {
+    SERVICE: {
+      LIST: buildPath('/crm/order-services/list'),
+      EDIT: buildPath('/crm/order-services/edit'),
+    },
+  },
 }
